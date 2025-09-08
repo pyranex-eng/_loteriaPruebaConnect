@@ -969,6 +969,28 @@ h1 {
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // --- Lógica para asegurar solo un cantor por sala ---
+        const salaId = localStorage.getItem('salaId');
+        if (!salaId) {
+            alert('No se encontró la sala. Regresa al inicio.');
+            window.location.href = 'index.html';
+        }
+
+        // Verifica si ya hay cantor conectado en la sala
+        database.ref(`salas/${salaId}/cantorConnected`).once('value').then(snap => {
+            if (snap.exists() && snap.val() === true) {
+                alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
+                window.location.href = 'index.html';
+            } else {
+                // Marca cantor como conectado
+                database.ref(`salas/${salaId}/cantorConnected`).set(true);
+                // Al salir, marca como desconectado
+                window.addEventListener('beforeunload', () => {
+                    database.ref(`salas/${salaId}/cantorConnected`).set(false);
+                });
+            }
+        });
+
         const cartasLoteria = [
             { numero: 1, nombre: "El Gallo", imagen: "LoteriaEstampas/pagina1_img0.jpeg", descripcion: "Simboliza la vigilancia y la valentía." },
             { numero: 2, nombre: "El Diablito", imagen: "LoteriaEstampas/pagina2_img0.jpeg", descripcion: "Representa la tentación y el mal." },
