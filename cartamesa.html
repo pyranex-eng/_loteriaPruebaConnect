@@ -985,17 +985,39 @@ h1 {
             window.location.href = 'index.html';
         }
 
-        // Verifica si ya hay cantor conectado en la sala
-        database.ref(`salas/${salaId}/cantorConnected`).once('value').then(snap => {
-            if (snap.exists() && snap.val() === true) {
-                alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
-                window.location.href = 'index.html';
-            } else {
-                // Marca cantor como conectado
-                database.ref(`salas/${salaId}/cantorConnected`).set(true);
-                // Al salir, marca como desconectado
-                window.addEventListener('beforeunload', () => {
-                    database.ref(`salas/${salaId}/cantorConnected`).set(false);
+        // --- Presencia robusta para cantor ---
+        const connectedRef = firebase.database().ref('.info/connected');
+        connectedRef.on('value', function(snap) {
+            if (snap.val() === true) {
+                // Verifica si ya hay cantor conectado en la sala
+                database.ref(`salas/${salaId}/cantorConnected`).once('value').then(snapCantor => {
+                    if (snapCantor.exists() && snapCantor.val() === true) {
+                        alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
+                        window.location.href = 'index.html';
+                    } else {
+                        // Marca cantor como conectado
+                        const refCantor = database.ref(`salas/${salaId}/cantorConnected`);
+                        refCantor.set(true);
+                        refCantor.onDisconnect().set(false);
+                        // Marcar presencia del cantor en la lista de jugadores
+                        const refPlayers = database.ref(`salas/${salaId}/players/cantor`);
+                        refPlayers.set({name:'Cantor',connected:true,timestamp:Date.now()});
+                        refPlayers.onDisconnect().remove();
+                        // Al salir, limpiar chat y verificar si sala debe eliminarse
+                        window.addEventListener('beforeunload', () => {
+                            database.ref(`salas/${salaId}/chat`).remove();
+                            refCantor.set(false);
+                            refPlayers.remove();
+                            // Esperar un poco y eliminar sala si no hay nadie
+                            setTimeout(() => {
+                                database.ref(`salas/${salaId}/players`).once('value').then(snapPlayers => {
+                                    if (!snapPlayers.exists() || Object.keys(snapPlayers.val()||{}).length === 0) {
+                                        database.ref(`salas/${salaId}`).remove();
+                                    }
+                                });
+                            }, 1000);
+                        });
+                    }
                 });
             }
         });

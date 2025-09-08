@@ -1,3 +1,28 @@
+// --- Presencia robusta para jugadores ---
+function setupPresence() {
+    const salaId = localStorage.getItem('salaId') || 'default';
+    const connectedRef = firebase.database().ref('.info/connected');
+    connectedRef.on('value', function(snap) {
+        if (snap.val() === true && playerId) {
+            // Marcar presencia del jugador
+            const refPlayer = database.ref(`salas/${salaId}/players/${playerId}`);
+            refPlayer.set({name: playerName, connected: true, timestamp: Date.now()});
+            refPlayer.onDisconnect().remove();
+            // Al salir, limpiar chat y verificar si sala debe eliminarse
+            window.addEventListener('beforeunload', () => {
+                database.ref(`salas/${salaId}/players/${playerId}`).remove();
+                database.ref(`salas/${salaId}/chat`).remove();
+                setTimeout(() => {
+                    database.ref(`salas/${salaId}/players`).once('value').then(snapPlayers => {
+                        if (!snapPlayers.exists() || Object.keys(snapPlayers.val()||{}).length === 0) {
+                            database.ref(`salas/${salaId}`).remove();
+                        }
+                    });
+                }, 1000);
+            });
+        }
+    });
+}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1147,6 +1172,7 @@ function renderDrawnCardsTable(drawnNumbers) {
             listenAndRenderUserList(); // NUEVO: Escuchar lista de usuarios conectados
             listenAndRenderChat(); // Iniciar chat en tiempo real
             listenAndRenderDrawnCards(); // Iniciar tabla de cartas cantadas
+            setTimeout(setupPresence, 500); // Espera a que playerId esté listo
         });
 
         // Inicializar la aplicación
