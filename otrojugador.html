@@ -807,10 +807,12 @@
 
     <div class="loteria-container">
         <h1>Lotería Mexicana - Jugador</h1>
+        
         <div class="game-status" id="gameStatus">
             <div>Estado: <span id="statusText">Esperando al cantor...</span></div>
             <div>Cartas cantadas: <span id="cardsCount">0</span></div>
         </div>
+        
         <div class="player-info">
             <div class="player-tag otrojugador-tag">Jugador (Tú)</div>
             <div class="player1-info">
@@ -818,8 +820,6 @@
                 <span class="connection-dot dot-disconnected" id="callerStatus"></span>
             </div>
         </div>
-        <div id="salaInfo" style="margin-bottom:10px; color:#ffde00; font-weight:bold;"></div>
-        <div id="jugadoresConectados" style="margin-bottom:20px;"></div>
         
         <div class="main-content">
             <div class="info-section">
@@ -854,64 +854,10 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     
-    <script type="module" src="firebase-conn.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
-    <script type="module">
-    import { db, ref, onValue, set, remove, onDisconnect, push, get, child } from './firebase-conn.js';
-
-    // --- NUEVO: Manejo de sala y jugadores conectados ---
-    const salaId = localStorage.getItem('salaId');
-    const salaNombre = localStorage.getItem('salaNombre');
-    let nick = localStorage.getItem('nick');
-    let avatar = localStorage.getItem('avatar');
-    const salaInfo = document.getElementById('salaInfo');
-    const jugadoresConectados = document.getElementById('jugadoresConectados');
-
-    // Esperar a que el usuario seleccione avatar/nick antes de registrar
-    let jugadorRef;
-    function registrarJugadorSala(playerId, nick, avatar) {
-        if (!salaId || !playerId) return;
-        jugadorRef = ref(db, `salas/${salaId}/jugadores/${playerId}`);
-        set(jugadorRef, {
-            nick: nick,
-            avatar: avatar,
-            conectado: true,
-            timestamp: Date.now()
-        });
-        onDisconnect(jugadorRef).remove();
-    }
-
-    if (salaId && salaNombre) {
-        salaInfo.textContent = `Sala: ${salaNombre}`;
-    } else {
-        salaInfo.textContent = 'No hay sala seleccionada.';
-    }
-
-    // Escuchar y mostrar lista de conectados en la sala
-    function mostrarJugadoresConectados() {
-        if (!salaId) return;
-        const jugadoresRef = ref(db, `salas/${salaId}/jugadores`);
-        onValue(jugadoresRef, (snapshot) => {
-            const jugadores = snapshot.val() || {};
-            let html = '<b>Jugadores conectados:</b><ul style="list-style:none;padding:0;">';
-            Object.entries(jugadores).forEach(([key, val]) => {
-                html += `<li style="margin:4px 0;display:flex;align-items:center;gap:8px;">
-                    ${val.avatar ? `<img src="${val.avatar}" alt="avatar" style="width:24px;height:24px;border-radius:50%;">` : ''}
-                    <span>${val.nick || key}${key==='cantor' ? ' <span style=\'color:#ffde00\'>(Cantor)</span>' : ''}${key===playerId ? ' <span style=\'color:#ffde00\'>(Tú)</span>' : ''}</span>
-                </li>`;
-            });
-            html += '</ul>';
-            jugadoresConectados.innerHTML = html;
-        });
-    }
-
-    // Esperar a que el usuario seleccione avatar antes de registrar en sala
-    window.addEventListener('DOMContentLoaded', () => {
-        // ...existing code...
-        // Cuando el usuario selecciona avatar y se genera playerId:
-        window.registrarJugadorSala = registrarJugadorSala;
-        mostrarJugadoresConectados();
-    });
+    <script>
         // Configuración de Firebase (la misma que en cartamesa.html)
         const firebaseConfig = {
             apiKey: "AIzaSyABJmU-UBjqwQiuzVUhpIdUmYsXcHV0P6s",
@@ -1099,18 +1045,16 @@ function submitAvatar() {
         alert('Por favor selecciona un avatar para continuar.');
         return;
     }
+    
     // Guardar el nombre del avatar como nombre del jugador
     playerName = selectedAvatar.nombre;
     playerTagElement.textContent = `${playerName} (Tú)`; // Actualiza el apodo en la interfaz
     avatarModal.style.display = 'none'; // Oculta el modal
+    
     // Generar un ID único para el jugador
     playerId = `player_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    // Guardar nick/avatar en localStorage para persistencia
-    localStorage.setItem('nick', playerName);
-    localStorage.setItem('avatar', selectedAvatar.icono ? `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/svgs/solid/${selectedAvatar.icono.split(' ')[1].replace('fa-','')}.svg` : '');
-    // Registrar en la sala de Firebase
-    window.registrarJugadorSala(playerId, playerName, localStorage.getItem('avatar'));
-    // Registrar en la rama de game/players para compatibilidad
+    
+    // Ahora que tenemos el avatar, podemos registrar al jugador
     registerPlayer();
     showBoardMessage(`¡Bienvenido, ${playerName}! Esperando al cantor...`, "info");
 }

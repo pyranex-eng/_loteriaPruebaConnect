@@ -828,47 +828,42 @@ h1 {
 </style>
 </head>
 <body>
+    <div id="particles-js"></div>
+    <div class="connections" id="connections"></div>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+    <div class="spotlight" id="spotlight"></div>
 
-        <div id="particles-js"></div>
-        <div class="connections" id="connections"></div>
-        <div class="floating-elements">
-                <div class="floating-element"></div>
-                <div class="floating-element"></div>
-                <div class="floating-element"></div>
-                <div class="floating-element"></div>
-        </div>
-        <div class="spotlight" id="spotlight"></div>
+    <div class="matrix-overlay" id="matrixOverlay">
+        <h2>Barajeando cartas...</h2>
+    </div>
 
-        <div class="matrix-overlay" id="matrixOverlay">
-                <h2>Barajeando cartas...</h2>
-        </div>
+    <div class="firebase-status status-disconnected" id="firebaseStatus">
+        <i class="fas fa-plug status-icon"></i>
+        <span>Desconectado de Firebase</span>
+    </div>
 
-        <div class="firebase-status status-disconnected" id="firebaseStatus">
-                <i class="fas fa-plug status-icon"></i>
-                <span>Desconectado de Firebase</span>
-        </div>
+    <div class="winner-announcement" id="winnerAnnouncement">
+        <h2 id="winnerText">¡Felicidades! ¡Has ganado! La Primera Ronda 1/2</h2>
+        <button class="btn" id="newGameBtn">Continuar la carta llena</button>
+    </div>
 
-        <div class="winner-announcement" id="winnerAnnouncement">
-                <h2 id="winnerText">¡Felicidades! ¡Has ganado! La Primera Ronda 1/2</h2>
-                <button class="btn" id="newGameBtn">Continuar la carta llena</button>
-        </div>
-
-        <!-- MODAL AVATAR/NICK PARA CANTOR -->
-        <div id="avatarModal" class="avatar-modal" aria-hidden="true">
-            <div class="avatar-content" role="dialog" aria-labelledby="avatarTitle">
-                <h3 id="avatarTitle">Selecciona tu avatar y nick</h3>
-                <p style="color:var(--color-text-light); margin:0 0 10px;">Haz clic en un avatar y pon tu nick para comenzar.</p>
-                <input type="text" id="nickInput" placeholder="Tu nick (ej. Cantor)">
-                <div class="avatar-grid" id="avatarGrid"></div>
-                <div class="avatar-actions">
-                    <button class="btn" id="submitAvatarBtn">Comenzar</button>
-                    <button class="btn" id="skipAvatarBtn" type="button">Omitir</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="salaInfo" style="margin-bottom:10px; color:#ffde00; font-weight:bold;"></div>
-        <div id="jugadoresConectados" style="margin-bottom:20px;"></div>
+    <!-- AVATAR MODAL: pegar antes de .loteria-container -->
+<div id="avatarModal" class="avatar-modal" aria-hidden="true">
+  <div class="avatar-content" role="dialog" aria-labelledby="avatarTitle">
+    <h3 id="avatarTitle">Selecciona tu avatar</h3>
+    <p style="color:var(--color-text-light); margin:0 0 10px;">Haz clic en un avatar y presiona "Comenzar".</p>
+    <div class="avatar-grid" id="avatarGrid"></div>
+    <div class="avatar-actions">
+      <button class="btn" id="submitAvatarBtn">Comenzar</button>
+      <button class="btn" id="skipAvatarBtn" type="button">Omitir</button>
+    </div>
+  </div>
+</div>
 
 
     <div class="loteria-container">
@@ -954,65 +949,82 @@ h1 {
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     
-    <script type="module">
-    import { db, ref, onValue, set, remove, onDisconnect, push, get, child } from './firebase-conn.js';
-    // --- Lista de cartas de Lotería ---
-    const cartasLoteria = [
-        { numero: 1, nombre: "El Gallo", imagen: "LoteriaEstampas/pagina1_img0.jpeg", descripcion: "Simboliza la vigilancia y la valentía." },
-        { numero: 2, nombre: "El Diablito", imagen: "LoteriaEstampas/pagina2_img0.jpeg", descripcion: "Representa la tentación y el mal." },
-        { numero: 3, nombre: "La Dama", imagen: "LoteriaEstampas/pagina3_img0.jpeg", descripcion: "Simboliza la elegancia y la belleza femenina." },
-        { numero: 4, nombre: "El Catrín", imagen: "LoteriaEstampas/pagina4_img0.jpeg", descripcion: "Representa a un hombre elegante y refinado." },
-        { numero: 5, nombre: "El Paraguas", imagen: "LoteriaEstampas/pagina5_img0.jpeg", descripcion: "Simboliza protección y resguardo." },
-        { numero: 6, nombre: "La Sirena", imagen: "LoteriaEstampas/pagina6_img0.jpeg", descripcion: "Representa la seducción y el misterio." },
-        { numero: 7, nombre: "La Escalera", imagen: "LoteriaEstampas/pagina7_img0.jpeg", descripcion: "Simboliza ascenso y progreso." },
-        { numero: 8, nombre: "La Botella", imagen: "LoteriaEstampas/pagina8_img0.jpeg", descripcion: "Representa celebración y alegría." },
-        { numero: 9, nombre: "El Barril", imagen: "LoteriaEstampas/pagina9_img0.jpeg", descripcion: "Simboliza abundancia y provisiones." },
-        { numero: 10, nombre: "El Árbol", imagen: "LoteriaEstampas/pagina10_img0.jpeg", descripcion: "Representa la vida y la naturaleza." },
-        { numero: 11, nombre: "El Melón", imagen: "LoteriaEstampas/pagina11_img0.jpeg", descripcion: "Simboliza la dulzura y la fertilidad." },
-        { numero: 12, nombre: "El Valiente", imagen: "LoteriaEstampas/pagina12_img0.jpeg", descripcion: "Representa el coraje y la fuerza." },
-        { numero: 13, nombre: "El Gorrito", imagen: "LoteriaEstampas/pagina13_img0.jpeg", descripcion: "Simboliza protección y humildad." },
-        { numero: 14, nombre: "La Muerte", imagen: "LoteriaEstampas/pagina14_img0.jpeg", descripcion: "Representa el fin de un ciclo y transformación." },
-        { numero: 15, nombre: "La Pera", imagen: "LoteriaEstampas/pagina15_img0.jpeg", descripcion: "Simboliza la salud y la dulzura." },
-        { numero: 16, nombre: "La Bandera", imagen: "LoteriaEstampas/pagina16_img0.jpeg", descripcion: "Representa patriotismo e identidad." },
-        { numero: 17, nombre: "El Bandolón", imagen: "LoteriaEstampas/pagina17_img0.jpeg", descripcion: "Simboliza la música y la armonía." },
-        { numero: 18, nombre: "El Violoncello", imagen: "LoteriaEstampas/pagina18_img0.jpeg", descripcion: "Representa la elegancia en la música." },
-        { numero: 19, nombre: "La Garza", imagen: "LoteriaEstampas/pagina19_img0.jpeg", descripcion: "Simboliza la gracia y la libertad." },
-        { numero: 20, nombre: "El Pájaro", imagen: "LoteriaEstampas/pagina20_img0.jpeg", descripcion: "Representa la libertad y el espíritu." },
-        { numero: 21, nombre: "La Mano", imagen: "LoteriaEstampas/pagina21_img0.jpeg", descripcion: "Simboliza el trabajo y la acción." },
-        { numero: 22, nombre: "La Bota", imagen: "LoteriaEstampas/pagina22_img0.jpeg", descripcion: "Representa el viaje y el camino." },
-        { numero: 23, nombre: "La Luna", imagen: "LoteriaEstampas/pagina23_img0.jpeg", descripcion: "Simboliza la intuición y los ciclos." },
-        { numero: 24, nombre: "El Cotorro", imagen: "LoteriaEstampas/pagina24_img0.jpeg", descripcion: "Representa la comunicación y la sociabilidad." },
-        { numero: 25, nombre: "El Borracho", imagen: "LoteriaEstampas/pagina25_img0.jpeg", descripcion: "Simboliza los excesos y la falta de control." },
-        { numero: 26, nombre: "El Negrito", imagen: "LoteriaEstampas/pagina26_img0.jpeg", descripcion: "Representa la alegría y la música." },
-        { numero: 27, nombre: "El Corazón", imagen: "LoteriaEstampas/pagina27_img0.jpeg", descripcion: "Simboliza el amor y los sentimientos." },
-        { numero: 28, nombre: "La Sandía", imagen: "LoteriaEstampas/pagina28_img0.jpeg", descripcion: "Representa la abundancia y la frescura." },
-        { numero: 29, nombre: "El Tambor", imagen: "LoteriaEstampas/pagina29_img0.jpeg", descripcion: "Simboliza el ritmo y la celebración." },
-        { numero: 30, nombre: "El Camarón", imagen: "LoteriaEstampas/pagina30_img0.jpeg", descripcion: "Representa la adaptabilidad y la perseverancia." },
-        { numero: 31, nombre: "Las Jaras", imagen: "LoteriaEstampas/pagina31_img0.jpeg", descripcion: "Simboliza la dirección y el propósito." },
-        { numero: 32, nombre: "El Músico", imagen: "LoteriaEstampas/pagina32_img0.jpeg", descripcion: "Representa el arte y la expresión." },
-        { numero: 33, nombre: "La Araña", imagen: "LoteriaEstampas/pagina33_img0.jpeg", descripcion: "Simboliza la creatividad y la paciencia." },
-        { numero: 34, nombre: "El Soldado", imagen: "LoteriaEstampas/pagina34_img0.jpeg", descripcion: "Representa la disciplina y el honor." },
-        { numero: 35, nombre: "La Estrella", imagen: "LoteriaEstampas/pagina35_img0.jpeg", descripcion: "Simboliza la guía y la esperanza." },
-        { numero: 36, nombre: "El Cazo", imagen: "LoteriaEstampas/pagina36_img0.jpeg", descripcion: "Representa la utilidad y el trabajo doméstico." },
-        { numero: 37, nombre: "El Mundo", imagen: "LoteriaEstampas/pagina37_img0.jpeg", descripcion: "Simboliza la totalidad y la conexión universal." },
-        { numero: 38, nombre: "El Apache", imagen: "LoteriaEstampas/pagina38_img0.jpeg", descripcion: "Representa la fuerza y la resistencia." },
-        { numero: 39, nombre: "El Nopal", imagen: "LoteriaEstampas/pagina39_img0.jpeg", descripcion: "Simboliza la resiliencia y la identidad mexicana." },
-        { numero: 40, nombre: "El Alacrán", imagen: "LoteriaEstampas/pagina40_img0.jpeg", descripcion: "Representa el peligro y la defensa." },
-        { numero: 41, nombre: "La Rosa", imagen: "LoteriaEstampas/pagina41_img0.jpeg", descripcion: "Simboliza el amor y la belleza." },
-        { numero: 42, nombre: "La Calavera", imagen: "LoteriaEstampas/pagina42_img0.jpeg", descripcion: "Representa la muerte y el recuerdo de los seres queridos." },
-        { numero: 43, nombre: "La Campana", imagen: "LoteriaEstampas/pagina43_img0.jpeg", descripcion: "Simboliza la alerta y el llamado a la comunidad." },
-        { numero: 44, nombre: "El Cantarito", imagen: "LoteriaEstampas/pagina44_img0.jpeg", descripcion: "Representa la tradición y la frescura." },
-        { numero: 45, nombre: "El Venado", imagen: "LoteriaEstampas/pagina45_img0.jpeg", descripcion: "Simboliza la agilidad y la conexión con la naturaleza." },
-        { numero: 46, nombre: "El Sol", imagen: "LoteriaEstampas/pagina46_img0.jpeg", descripcion: "Representa la vida, la energía y la vitalidad." },
-        { numero: 47, nombre: "La Corona", imagen: "LoteriaEstampas/pagina47_img0.jpeg", descripcion: "Simboliza el poder y la autoridad." },
-        { numero: 48, nombre: "La Chalupa", imagen: "LoteriaEstampas/pagina48_img0.jpeg", descripcion: "Representa el transporte y el viaje por el agua." },
-        { numero: 49, nombre: "El Pino", imagen: "LoteriaEstampas/pagina49_img0.jpeg", descripcion: "Simboliza la fortaleza y la longevidad." },
-        { numero: 50, nombre: "El Pescado", imagen: "LoteriaEstampas/pagina50_img0.jpeg", descripcion: "Representa la abundancia y la prosperidad." },
-        { numero: 51, nombre: "La Palma", imagen: "LoteriaEstampas/pagina51_img0.jpeg", descripcion: "Simboliza el descanso y la victoria." },
-        { numero: 52, nombre: "La Maceta", imagen: "LoteriaEstampas/pagina52_img0.jpeg", descripcion: "Representa el crecimiento y la naturaleza doméstica." },
-        { numero: 53, nombre: "El Arpa", imagen: "LoteriaEstampas/pagina53_img0.jpeg", descripcion: "Simboliza la música celestial y la armonía." },
-        { numero: 54, nombre: "La Rana", imagen: "LoteriaEstampas/pagina54_img0.jpeg", descripcion: "Representa la transformación y la adaptabilidad." }
-    ];
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyABJmU-UBjqwQiuzVUhpIdUmYsXcHV0P6s",
+            authDomain: "loteriafirebase.firebaseapp.com",
+            databaseURL: "https://loteriafirebase-default-rtdb.firebaseio.com",
+            projectId: "loteriafirebase",
+            storageBucket: "loteriafirebase.firebasestorage.app",
+            messagingSenderId: "823786320629",
+            appId: "1:823786320629:web:c5a6a2ef4507140eaf0bbc",
+            measurementId: "G-S988BPJ8EG"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const cartasLoteria = [
+            { numero: 1, nombre: "El Gallo", imagen: "LoteriaEstampas/pagina1_img0.jpeg", descripcion: "Simboliza la vigilancia y la valentía." },
+            { numero: 2, nombre: "El Diablito", imagen: "LoteriaEstampas/pagina2_img0.jpeg", descripcion: "Representa la tentación y el mal." },
+            { numero: 3, nombre: "La Dama", imagen: "LoteriaEstampas/pagina3_img0.jpeg", descripcion: "Simboliza la elegancia y la belleza femenina." },
+            { numero: 4, nombre: "El Catrín", imagen: "LoteriaEstampas/pagina4_img0.jpeg", descripcion: "Representa a un hombre elegante y refinado." },
+            { numero: 5, nombre: "El Paraguas", imagen: "LoteriaEstampas/pagina5_img0.jpeg", descripcion: "Simboliza protección y resguardo." },
+            { numero: 6, nombre: "La Sirena", imagen: "LoteriaEstampas/pagina6_img0.jpeg", descripcion: "Representa la seducción y el misterio." },
+            { numero: 7, nombre: "La Escalera", imagen: "LoteriaEstampas/pagina7_img0.jpeg", descripcion: "Simboliza ascenso y progreso." },
+            { numero: 8, nombre: "La Botella", imagen: "LoteriaEstampas/pagina8_img0.jpeg", descripcion: "Representa celebración y alegría." },
+            { numero: 9, nombre: "El Barril", imagen: "LoteriaEstampas/pagina9_img0.jpeg", descripcion: "Simboliza abundancia y provisiones." },
+            { numero: 10, nombre: "El Árbol", imagen: "LoteriaEstampas/pagina10_img0.jpeg", descripcion: "Representa la vida y la naturaleza." },
+            { numero: 11, nombre: "El Melón", imagen: "LoteriaEstampas/pagina11_img0.jpeg", descripcion: "Simboliza la dulzura y la fertilidad." },
+            { numero: 12, nombre: "El Valiente", imagen: "LoteriaEstampas/pagina12_img0.jpeg", descripcion: "Representa el coraje y la fuerza." },
+            { numero: 13, nombre: "El Gorrito", imagen: "LoteriaEstampas/pagina13_img0.jpeg", descripcion: "Simboliza protección y humildad." },
+            { numero: 14, nombre: "La Muerte", imagen: "LoteriaEstampas/pagina14_img0.jpeg", descripcion: "Representa el fin de un ciclo y transformación." },
+            { numero: 15, nombre: "La Pera", imagen: "LoteriaEstampas/pagina15_img0.jpeg", descripcion: "Simboliza la salud y la dulzura." },
+            { numero: 16, nombre: "La Bandera", imagen: "LoteriaEstampas/pagina16_img0.jpeg", descripcion: "Representa patriotismo e identidad." },
+            { numero: 17, nombre: "El Bandolón", imagen: "LoteriaEstampas/pagina17_img0.jpeg", descripcion: "Simboliza la música y la armonía." },
+            { numero: 18, nombre: "El Violoncello", imagen: "LoteriaEstampas/pagina18_img0.jpeg", descripcion: "Representa la elegancia en la música." },
+            { numero: 19, nombre: "La Garza", imagen: "LoteriaEstampas/pagina19_img0.jpeg", descripcion: "Simboliza la gracia y la libertad." },
+            { numero: 20, nombre: "El Pájaro", imagen: "LoteriaEstampas/pagina20_img0.jpeg", descripcion: "Representa la libertad y el espíritu." },
+            { numero: 21, nombre: "La Mano", imagen: "LoteriaEstampas/pagina21_img0.jpeg", descripcion: "Simboliza el trabajo y la acción." },
+            { numero: 22, nombre: "La Bota", imagen: "LoteriaEstampas/pagina22_img0.jpeg", descripcion: "Representa el viaje y el camino." },
+            { numero: 23, nombre: "La Luna", imagen: "LoteriaEstampas/pagina23_img0.jpeg", descripcion: "Simboliza la intuición y los ciclos." },
+            { numero: 24, nombre: "El Cotorro", imagen: "LoteriaEstampas/pagina24_img0.jpeg", descripcion: "Representa la comunicación y la sociabilidad." },
+            { numero: 25, nombre: "El Borracho", imagen: "LoteriaEstampas/pagina25_img0.jpeg", descripcion: "Simboliza los excesos y la falta de control." },
+            { numero: 26, nombre: "El Negrito", imagen: "LoteriaEstampas/pagina26_img0.jpeg", descripcion: "Representa la alegría y la música." },
+            { numero: 27, nombre: "El Corazón", imagen: "LoteriaEstampas/pagina27_img0.jpeg", descripcion: "Simboliza el amor y los sentimientos." },
+            { numero: 28, nombre: "La Sandía", imagen: "LoteriaEstampas/pagina28_img0.jpeg", descripcion: "Representa la abundancia y la frescura." },
+            { numero: 29, nombre: "El Tambor", imagen: "LoteriaEstampas/pagina29_img0.jpeg", descripcion: "Simboliza el ritmo y la celebración." },
+            { numero: 30, nombre: "El Camarón", imagen: "LoteriaEstampas/pagina30_img0.jpeg", descripcion: "Representa la adaptabilidad y la perseverancia." },
+            { numero: 31, nombre: "Las Jaras", imagen: "LoteriaEstampas/pagina31_img0.jpeg", descripcion: "Simboliza la dirección y el propósito." },
+            { numero: 32, nombre: "El Músico", imagen: "LoteriaEstampas/pagina32_img0.jpeg", descripcion: "Representa el arte y la expresión." },
+            { numero: 33, nombre: "La Araña", imagen: "LoteriaEstampas/pagina33_img0.jpeg", descripcion: "Simboliza la creatividad y la paciencia." },
+            { numero: 34, nombre: "El Soldado", imagen: "LoteriaEstampas/pagina34_img0.jpeg", descripcion: "Representa la disciplina y el honor." },
+            { numero: 35, nombre: "La Estrella", imagen: "LoteriaEstampas/pagina35_img0.jpeg", descripcion: "Simboliza la guía y la esperanza." },
+            { numero: 36, nombre: "El Cazo", imagen: "LoteriaEstampas/pagina36_img0.jpeg", descripcion: "Representa la utilidad y el trabajo doméstico." },
+            { numero: 37, nombre: "El Mundo", imagen: "LoteriaEstampas/pagina37_img0.jpeg", descripcion: "Simboliza la totalidad y la conexión universal." },
+            { numero: 38, nombre: "El Apache", imagen: "LoteriaEstampas/pagina38_img0.jpeg", descripcion: "Representa la fuerza y la resistencia." },
+            { numero: 39, nombre: "El Nopal", imagen: "LoteriaEstampas/pagina39_img0.jpeg", descripcion: "Simboliza la resiliencia y la identidad mexicana." },
+            { numero: 40, nombre: "El Alacrán", imagen: "LoteriaEstampas/pagina40_img0.jpeg", descripcion: "Representa el peligro y la defensa." },
+            { numero: 41, nombre: "La Rosa", imagen: "LoteriaEstampas/pagina41_img0.jpeg", descripcion: "Simboliza el amor y la belleza." },
+            { numero: 42, nombre: "La Calavera", imagen: "LoteriaEstampas/pagina42_img0.jpeg", descripcion: "Representa la muerte y el recuerdo de los seres queridos." },
+            { numero: 43, nombre: "La Campana", imagen: "LoteriaEstampas/pagina43_img0.jpeg", descripcion: "Simboliza la alerta y el llamado a la comunidad." },
+            { numero: 44, nombre: "El Cantarito", imagen: "LoteriaEstampas/pagina44_img0.jpeg", descripcion: "Representa la tradición y la frescura." },
+            { numero: 45, nombre: "El Venado", imagen: "LoteriaEstampas/pagina45_img0.jpeg", descripcion: "Simboliza la agilidad y la conexión con la naturaleza." },
+            { numero: 46, nombre: "El Sol", imagen: "LoteriaEstampas/pagina46_img0.jpeg", descripcion: "Representa la vida, la energía y la vitalidad." },
+            { numero: 47, nombre: "La Corona", imagen: "LoteriaEstampas/pagina47_img0.jpeg", descripcion: "Simboliza el poder y la autoridad." },
+            { numero: 48, nombre: "La Chalupa", imagen: "LoteriaEstampas/pagina48_img0.jpeg", descripcion: "Representa el transporte y el viaje por el agua." },
+            { numero: 49, nombre: "El Pino", imagen: "LoteriaEstampas/pagina49_img0.jpeg", descripcion: "Simboliza la fortaleza y la longevidad." },
+            { numero: 50, nombre: "El Pescado", imagen: "LoteriaEstampas/pagina50_img0.jpeg", descripcion: "Representa la abundancia y la prosperidad." },
+            { numero: 51, nombre: "La Palma", imagen: "LoteriaEstampas/pagina51_img0.jpeg", descripcion: "Simboliza el descanso y la victoria." },
+            { numero: 52, nombre: "La Maceta", imagen: "LoteriaEstampas/pagina52_img0.jpeg", descripcion: "Representa el crecimiento y la naturaleza doméstica." },
+            { numero: 53, nombre: "El Arpa", imagen: "LoteriaEstampas/pagina53_img0.jpeg", descripcion: "Simboliza la música celestial y la armonía." },
+            { numero: 54, nombre: "La Rana", imagen: "LoteriaEstampas/pagina54_img0.jpeg", descripcion: "Representa la transformación y la adaptabilidad." }
+        ];
 
         // Variables globales
         let cartasDisponibles = [...cartasLoteria];
