@@ -5,25 +5,194 @@
   <title>Salas de Juego - Lotería Mexicana</title>
   <script type="module" src="firebase-conn.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #f8f8f8; }
-    .sala-lista, .crear-sala { margin: 2em auto; max-width: 400px; background: #fff; padding: 1.5em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-    .sala { padding: 0.5em 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: linear-gradient(135deg, #006847 0%, #ffde00 100%);
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+    .particles-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .main-container {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+      margin: 48px auto 0 auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.18);
+      padding: 2.5em 2em 2em 2em;
+      animation: fadeInUp 1s cubic-bezier(.23,1.01,.32,1) both;
+    }
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: none; }
+    }
+    h2 {
+      text-align: center;
+      color: #006847;
+      font-size: 2.3em;
+      margin-bottom: 0.5em;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #ffde0033;
+    }
+    .crear-sala {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 2em;
+      align-items: center;
+      justify-content: center;
+      background: #f7f7f7;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #00684722;
+      padding: 1.2em 1em;
+      animation: fadeInUp 1.2s 0.2s both;
+    }
+    .crear-sala input[type=text] {
+      flex: 1;
+      padding: 0.7em 1em;
+      border: 2px solid #006847;
+      border-radius: 8px;
+      font-size: 1.1em;
+      background: #fff;
+      transition: border 0.2s;
+    }
+    .crear-sala input[type=text]:focus {
+      border: 2px solid #ffde00;
+      outline: none;
+    }
+    .crear-sala button {
+      background: linear-gradient(90deg, #006847 60%, #ffde00 100%);
+      color: #fff;
+      border: none;
+      padding: 0.7em 1.3em;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #00684733;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .crear-sala button:hover {
+      background: linear-gradient(90deg, #ffde00 0%, #006847 100%);
+      color: #222;
+      transform: translateY(-2px) scale(1.04);
+    }
+    .sala-lista {
+      background: #fffbe7;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px #00684722;
+      padding: 1.5em 1em 1em 1em;
+      margin-top: 1.5em;
+      animation: fadeInUp 1.3s 0.3s both;
+    }
+    .sala-lista h3 {
+      color: #c8102e;
+      margin-bottom: 1em;
+      text-align: center;
+      font-size: 1.3em;
+      letter-spacing: 1px;
+    }
+    .sala {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7em 0.5em;
+      border-bottom: 1px solid #eee;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #fff 80%, #ffde0033 100%);
+      margin-bottom: 0.5em;
+      box-shadow: 0 1px 4px #00684711;
+      transition: box-shadow 0.2s, transform 0.15s;
+      animation: fadeInUp 0.7s both;
+    }
     .sala:last-child { border-bottom: none; }
-    button { background: #007bff; color: #fff; border: none; padding: 0.5em 1em; border-radius: 4px; cursor: pointer; }
-    button:hover { background: #0056b3; }
-    input[type=text] { width: 70%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+    .sala span {
+      font-weight: bold;
+      color: #006847;
+      font-size: 1.1em;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 4px #ffde0033;
+    }
+    .sala button {
+      background: linear-gradient(90deg, #c8102e 60%, #ffde00 100%);
+      color: #fff;
+      border: none;
+      padding: 0.5em 1.1em;
+      border-radius: 7px;
+      font-size: 1em;
+      font-weight: bold;
+      margin-left: 0.5em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #c8102e22;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .sala button:hover {
+      background: linear-gradient(90deg, #ffde00 0%, #c8102e 100%);
+      color: #222;
+      transform: translateY(-2px) scale(1.05);
+    }
+    .sala-lista em {
+      color: #888;
+      display: block;
+      text-align: center;
+      margin-top: 1.5em;
+      font-size: 1.1em;
+    }
+    /* Animación de partículas de fondo */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.18;
+      pointer-events: none;
+      animation: floatParticle 12s infinite linear;
+    }
+    @keyframes floatParticle {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-40px) scale(1.1); }
+      100% { transform: translateY(0) scale(1); }
+    }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center">Salas de Juego</h2>
-  <div class="crear-sala">
-    <input type="text" id="nuevaSala" placeholder="Nombre de la sala" />
-    <button id="btnCrearSala">Crear Sala</button>
+  <div class="particles-bg" id="particlesBg"></div>
+  <div class="main-container">
+    <h2>Salas de Juego</h2>
+    <div class="crear-sala">
+      <input type="text" id="nuevaSala" placeholder="Nombre de la sala" />
+      <button id="btnCrearSala">Crear Sala</button>
+    </div>
+    <div class="sala-lista">
+      <h3>Salas disponibles</h3>
+      <div id="listaSalas"></div>
+    </div>
   </div>
-  <div class="sala-lista">
-    <h3>Salas disponibles</h3>
-    <div id="listaSalas"></div>
-  </div>
+  <script>
+  // Efecto de partículas animadas de fondo
+  function createParticles() {
+    const colors = ['#006847', '#ffde00', '#c8102e', '#fffbe7'];
+    const bg = document.getElementById('particlesBg');
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 32 + 18;
+      p.style.width = p.style.height = size + 'px';
+      p.style.background = colors[Math.floor(Math.random()*colors.length)];
+      p.style.left = (Math.random()*100) + 'vw';
+      p.style.top = (Math.random()*100) + 'vh';
+      p.style.animationDuration = (10 + Math.random()*8) + 's';
+      p.style.animationDelay = (Math.random()*8) + 's';
+      bg.appendChild(p);
+    }
+  }
+  createParticles();
+  </script>
   <script type="module">
     import { db, ref, onValue, set, push, get, child } from './firebase-conn.js';
 
