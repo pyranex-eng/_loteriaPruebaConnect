@@ -31,7 +31,8 @@
     const btnCrearSala = document.getElementById('btnCrearSala');
     const nuevaSala = document.getElementById('nuevaSala');
 
-    // Mostrar salas activas
+
+    // Mostrar salas activas con botones para ambos roles
     function mostrarSalas() {
       onValue(ref(db, 'salas'), (snapshot) => {
         listaSalas.innerHTML = '';
@@ -40,8 +41,11 @@
           const sala = salas[salaId];
           const div = document.createElement('div');
           div.className = 'sala';
-          div.innerHTML = `<span>${sala.nombre}</span> <button data-id="${salaId}">Entrar</button>`;
-          div.querySelector('button').onclick = () => entrarSala(salaId, sala.nombre);
+          div.innerHTML = `<span>${sala.nombre}</span> 
+            <button data-id="${salaId}" data-role="jugador">Entrar como Jugador</button>
+            <button data-id="${salaId}" data-role="cantor">Entrar como Cantor</button>`;
+          div.querySelector('button[data-role="jugador"]').onclick = () => entrarSala(salaId, sala.nombre, false);
+          div.querySelector('button[data-role="cantor"]').onclick = () => entrarSala(salaId, sala.nombre, true);
           listaSalas.appendChild(div);
         });
         if (Object.keys(salas).length === 0) {
@@ -66,26 +70,25 @@
       nuevaSala.value = '';
     };
 
-    // Entrar a sala
-    function entrarSala(salaId, salaNombre, esCantor = false) {
-    localStorage.setItem('salaId', salaId);
-    localStorage.setItem('salaNombre', salaNombre);
-    localStorage.setItem('esCantor', esCantor.toString());
-    
-    if (esCantor) {
+    // Entrar a sala, con validación de cantor único
+    async function entrarSala(salaId, salaNombre, esCantor = false) {
+      localStorage.setItem('salaId', salaId);
+      localStorage.setItem('salaNombre', salaNombre);
+      localStorage.setItem('esCantor', esCantor.toString());
+      if (esCantor) {
+        // Verificar si ya hay cantor conectado en la sala
+        const cantorSnap = await get(child(ref(db), `salas/${salaId}/cantorConnected`));
+        if (cantorSnap.exists() && cantorSnap.val() === true) {
+          alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
+          return;
+        }
+        // Marcar cantor como conectado (se puede sobreescribir en cartamesa.html también)
+        await set(ref(db, `salas/${salaId}/cantorConnected`), true);
         window.location.href = 'cartamesa.html';
-    } else {
+      } else {
         window.location.href = 'otrojugador.html';
+      }
     }
-}
-
-// Y en los botones:
-div.innerHTML = `<span>${sala.nombre}</span> 
-    <button data-id="${salaId}" data-role="jugador">Entrar como Jugador</button>
-    <button data-id="${salaId}" data-role="cantor">Entrar como Cantor</button>`;
-
-div.querySelector('button[data-role="jugador"]').onclick = () => entrarSala(salaId, sala.nombre, false);
-div.querySelector('button[data-role="cantor"]').onclick = () => entrarSala(salaId, sala.nombre, true);
   </script>
 </body>
 </html>
