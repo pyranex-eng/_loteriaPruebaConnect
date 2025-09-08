@@ -884,6 +884,40 @@ h1 {
         
         <div class="main-content">
     <div class="caller-section">
+        <!-- Carta y controles arriba -->
+        <div class="controls-wrapper">
+            <div class="controls">
+                <select class="carta-selector" id="cartaSelector">
+                    <option value="">Selecciona una carta</option>
+                </select>
+                <button class="btn" id="randomBtn">Carta Aleatoria</button>
+            </div>
+            <div class="controls-secondary">
+                <button class="btn" id="shuffleBtn">Barajear</button>
+                <button class="btn" id="slideBtn">Correr Cartas</button>
+                <button class="btn" id="stopBtn" disabled>Detener</button>
+            </div>
+            <div class="slide-controls">
+                <div class="slide-speed">
+                    <label for="slideSpeed">Velocidad:</label>
+                    <input type="range" id="slideSpeed" min="2000" max="10000" step="500" value="5000">
+                    <span id="speedValue">5.0s</span>
+                </div>
+                <div class="auto-mark-control">
+                    <label for="autoMarkToggle">
+                        <input type="checkbox" id="autoMarkToggle"> Notificación automática
+                    </label>
+                    <input type="range" id="autoMarkTime" min="1" max="10" step="1" value="3" disabled>
+                    <span id="autoMarkTimeValue">3s</span>
+                </div>
+            </div>
+        </div>
+        <div class="carta-display">
+            <div class="carta" id="cartaDisplay">
+                <img class="carta-imagen" id="cartaImagen" src="" alt="Carta de lotería">
+                <div class="countdown-timer" id="countdownTimer" style="display: none;">3</div>
+            </div>
+        </div>
         <!-- Tabla de cartas ya sacadas -->
         <div class="drawn-cards-list">
             <h3>Cartas ya Sacadas</h3>
