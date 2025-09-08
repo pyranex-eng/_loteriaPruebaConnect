@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotería Mexicana - Inicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #006847; /* Verde bandera */
+            --color-secondary: #ffde00; /* Dorado para contraste */
+            --color-accent: #c8102e; /* Rojo bandera */
+            --color-text-light: #f0f0f0;
+            --color-text-dark: #333;
+            --color-bg-dark: #121212;
+            --color-bg-container: #1e1e1e;
+            --color-card-bg: rgba(255, 255, 255, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 104, 71, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(200, 16, 46, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 40% 80%, rgba(255, 222, 0, 0.1) 0%, transparent 30%);
+        }
+        
+        /* Efectos de fondo mejorados */
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: float 15s infinite ease-in-out;
+            opacity: 0.1;
+        }
+        
+        .floating-element:nth-child(1) { 
+            width: 200px; height: 200px; top: 15%; left: 10%; 
+            background: var(--color-primary);
+            animation-delay: 0s; 
+        }
+        .floating-element:nth-child(2) { 
+            width: 250px; height: 250px; bottom: 20%; right: 15%; 
+            background: var(--color-accent);
+            animation-delay: 5s; 
+        }
+        .floating-element:nth-child(3) { 
+            width: 150px; height: 150px; top: 45%; right: 30%; 
+            background: var(--color-secondary);
+            animation-delay: 10s; 
+        }
+        .floating-element:nth-child(4) { 
+            width: 180px; height: 180px; bottom: 10%; left: 25%; 
+            background: var(--color-primary);
+            animation-delay: 7s; 
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            50% { transform: translateY(-30px) rotate(180deg) scale(1.1); }
+            100% { transform: translateY(0) rotate(360deg) scale(1); }
+        }
+
+        /* Container and content styling mejorado */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            position: relative;
+            z-index: 3;
+        }
+        
+        header {
+            text-align: center;
+            margin: 40px 0;
+            animation: fadeIn 1s ease-out;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .logo-icon {
+            font-size: 5rem;
+            color: var(--color-secondary);
+            text-shadow: 0 0 15px rgba(255, 222, 0, 0.5);
+            animation: pulse 3s infinite ease-in-out;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            max-width: 700px;
+            line-height: 1.6;
+            color: rgba(240, 240, 240, 0.9);
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+            width: 100%;
+        }
+        
+        .card {
+            background: var(--color-card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            animation: slideUp 1s ease-out;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            color: var(--color-secondary);
+        }
+        
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--color-text-light);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            color: rgba(240, 240, 240, 0.8);
+            flex-grow: 1;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+            animation: fadeIn 1.5s ease-out;
+            width: 100%;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            background: linear-gradient(45deg, var(--color-primary), #119565);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 104, 71, 0.4);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 104, 71, 0.6);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, var(--color-accent), #e53935);
+            box-shadow: 0 5px 15px rgba(200, 16, 46, 0.4);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(200, 16, 46, 0.6);
+        }
+        
+        .btn-caller {
+            background: linear-gradient(45deg, var(--color-secondary), #ffea70);
+            color: var(--color-text-dark);
+            box-shadow: 0 5px 15px rgba(255, 222, 0, 0.4);
+        }
+
+        .btn-caller:hover {
+            box-shadow: 0 8px 20px rgba(255, 222, 0, 0.6);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--color-text-light);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 3;
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        footer p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Efecto de carta de lotería flotante */
+        .floating-card {
+            position: absolute;
+            width: 100px;
+            height: 140px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2;
+            animation: floatingCard 20s infinite linear;
+            opacity: 0.7;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+        
+        .floating-card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 50%, var(--color-accent) 100%);
+            opacity: 0.8;
+        }
+        
+        .floating-card::after {
+            content: 'Lotería';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .floating-card:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 25s;
+        }
+        
+        .floating-card:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+            animation-duration: 30s;
+        }
+        
+        .floating-card:nth-child(3) {
+            top: 40%;
+            left: 5%;
+            animation-delay: 10s;
+            animation-duration: 35s;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .content {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .logo-icon {
+                font-size: 4rem;
+            }
+            h1 {
+                font-size: 2.8rem;
+            }
+            .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+            }
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            .floating-card {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-icon {
+                font-size: 3.5rem;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card-icon {
+                font-size: 3rem;
+            }
+            .card h2 {
+                font-size: 1.5rem;
+            }
+            .card p {
+                font-size: 1rem;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes floatingCard {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(20px) rotate(-5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        
+        <!-- Cartas de lotería flotantes -->
+        <div class="floating-card"></div>
+        <div class="floating-card"></div>
+        <div class="floating-card"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-hat-cowboy-side logo-icon"></i>
+            </div>
+            <h1>Lotería Mexicana</h1>
+            <p class="subtitle">¡Vive la emoción del juego tradicional mexicano con un toque digital! Disfruta de partidas multijugador en tiempo real, diseños auténticos y toda la diversión de la lotería desde cualquier dispositivo.</p>
+        </header>
+
+        <div class="content">
+            <div class="card">
+                <i class="fas fa-user card-icon"></i>
+                <h2>Modo Jugador</h2>
+                <p>Únete a una partida y compite por completar tu tablero. Marca tus cartas, forma patrones ganadores y grita ¡Lotería! antes que los demás.</p>
+                <a href="salas.html" class="btn"><i class="fas fa-play"></i> Jugar Ahora</a>
+            </div>
+            
+            <div class="card">
+                <i class="fas fa-crown card-icon"></i>
+                <h2>Modo Cantor</h2>
+                <p>Dirige la partida como cantor. Barajea las cartas, anúncialas y controla el ritmo del juego. Gestiona múltiples jugadores en tiempo real.</p>
+                <a href="salas.html" class="btn btn-caller"><i class="fas fa-microphone"></i> Ser Cantor</a>
+            </div>
+            
+            <div class="card">
+                <i class="fas fa-book card-icon"></i>
+                <h2>Aprende a Jugar</h2>
+                <p>Descubre las reglas, patrones ganadores y estrategias de la Lotería Mexicana. Perfecto para principiantes y expertos que quieran mejorar.</p>
+                <a href="instrucciones.html" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> Instrucciones</a>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <a href="salas.html" class="btn"><i class="fas fa-users"></i> Unirse o Crear Sala</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 Lotería Mexicana Digital - Un proyecto que honra las tradiciones mexicanas con tecnología moderna</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Efecto de escritura para el título
+            const title = document.querySelector('h1');
+            const originalText = title.textContent;
+            title.textContent = '';
+            let i = 0;
+            
+            function typeWriter() {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            
+            // Iniciar la animación de escritura
+            setTimeout(typeWriter, 500);
+            
+            // Añadir efecto de aparición escalonada a las tarjetas
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+    </script>
+</body>
+</html>
