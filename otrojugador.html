@@ -770,7 +770,47 @@
 </head>
 <body>
     <div id="particles-js"></div>
+    <!-- Lista de usuarios conectados -->
+    <div id="userListContainer" style="width:100%;max-width:1200px;margin:0 auto 10px auto;z-index:20;position:relative;"></div>
     <div class="connections" id="connections"></div>
+    // --- NUEVO: Lista de usuarios conectados ---
+    const userListContainer = document.getElementById('userListContainer');
+        // Escuchar y mostrar la lista de usuarios conectados en tiempo real
+        function listenAndRenderUserList() {
+            database.ref('game/players').on('value', function(snapshot) {
+                const players = snapshot.val() || {};
+                // Filtrar solo conectados
+                const connectedPlayers = Object.entries(players)
+                    .filter(([_, p]) => p.connected)
+                    .map(([id, p]) => ({ id, ...p }));
+                renderUserList(connectedPlayers);
+            });
+        }
+
+        // Renderizar la lista de usuarios conectados con avatar y nombre
+        function renderUserList(players) {
+            if (!userListContainer) return;
+            if (!players.length) {
+                userListContainer.innerHTML = '';
+                return;
+            }
+            userListContainer.innerHTML = `
+                <div style="display:flex;gap:18px;align-items:center;justify-content:center;padding:10px 0 10px 0;flex-wrap:wrap;background:rgba(0,0,0,0.25);border-radius:12px;">
+                    ${players.map(p => {
+                        // Buscar avatar por nombre (retrocompatibilidad) o por id
+                        let avatar = avatares.find(a => a.nombre === p.name) || avatares[parseInt(p.avatarId)-1] || avatares[0];
+                        return `
+                            <div style="display:flex;flex-direction:column;align-items:center;min-width:60px;max-width:80px;">
+                                <div class="avatar-icon" style="color:${avatar.color};font-size:2.2rem;">
+                                    <i class="${avatar.icono}"></i>
+                                </div>
+                                <div class="avatar-name" style="font-size:0.95rem;${p.id===playerId?'font-weight:bold;color:#c8102e;':''}">${p.name}${p.id===playerId?' (Tú)':''}${p.id==='cantor'?' (Cantor)':''}</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
     <div class="floating-elements">
         <div class="floating-element"></div>
         <div class="floating-element"></div>
@@ -995,6 +1035,7 @@ const submitAvatarBtn = document.getElementById('submitAvatarBtn');
             setupEventListeners();
             initParticles();
             initDatabase();
+            listenAndRenderUserList(); // NUEVO: Escuchar lista de usuarios conectados
         });
 
         // Inicializar la aplicación
@@ -1303,9 +1344,12 @@ if (gameData.ronda) {
                     mensajeGanador = `¡Felicidades, ${playerName}! ¡Has ganado!`;
                 } else if (winnerData.player === "cantor") {
                     mensajeGanador = "¡El Cantor ha ganado!";
-                } else { // Otro jugador ha ganado
-                    // Intentar obtener el nombre del otro jugador si está disponible
-                    const otherPlayerName = gameData.players && gameData.players[winnerData.player] ? gameData.players[winnerData.player].name : "Otro Jugador";
+                } else {
+                    // Buscar el nombre del otro jugador de forma robusta
+                    let otherPlayerName = "Otro Jugador";
+                    if (gameData.players && gameData.players[winnerData.player]) {
+                        otherPlayerName = gameData.players[winnerData.player].name || "Otro Jugador";
+                    }
                     mensajeGanador = `¡${otherPlayerName} ha ganado!`;
                 }
 
