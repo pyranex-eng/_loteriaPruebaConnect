@@ -67,12 +67,25 @@
     };
 
     // Entrar a sala
-    function entrarSala(salaId, salaNombre) {
-      // Guarda en localStorage para usarlo en el resto del flujo
-      localStorage.setItem('salaId', salaId);
-      localStorage.setItem('salaNombre', salaNombre);
-      window.location.href = 'cartamesa.html'; // O redirige a otrojugador.html según el flujo
+    function entrarSala(salaId, salaNombre, esCantor = false) {
+    localStorage.setItem('salaId', salaId);
+    localStorage.setItem('salaNombre', salaNombre);
+    localStorage.setItem('esCantor', esCantor.toString());
+    
+    if (esCantor) {
+        window.location.href = 'cartamesa.html';
+    } else {
+        window.location.href = 'otrojugador.html';
     }
+}
+
+// Y en los botones:
+div.innerHTML = `<span>${sala.nombre}</span> 
+    <button data-id="${salaId}" data-role="jugador">Entrar como Jugador</button>
+    <button data-id="${salaId}" data-role="cantor">Entrar como Cantor</button>`;
+
+div.querySelector('button[data-role="jugador"]').onclick = () => entrarSala(salaId, sala.nombre, false);
+div.querySelector('button[data-role="cantor"]').onclick = () => entrarSala(salaId, sala.nombre, true);
   </script>
 </body>
 </html>
