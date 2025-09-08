@@ -988,6 +988,7 @@ function renderUserList(players) {
 document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
         <div class="board-container">
             <h3>Tu Mesa de Lotería</h3>
+            <div id="currentCardText" style="margin: 2px 0 10px 0; color: #ccc; font-size: 1.05rem; min-height: 1.2em;"></div>
             <div class="board-grid" id="playerBoard"></div>
             <div class="board-controls">
                 <button class="btn" id="distributeBtn">Generar Mi Mesa</button>
@@ -1190,7 +1191,25 @@ document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
             initBoard();
             checkFirebaseConnection();
             listenAndRenderChat(); // Iniciar chat en tiempo real
+            listenAndRenderCurrentCardText();
         });
+
+        // Mostrar el nombre de la carta actual debajo del título del tablero
+        function listenAndRenderCurrentCardText() {
+            const salaId = localStorage.getItem('salaId') || 'default';
+            const currentCardText = document.getElementById('currentCardText');
+            if (!currentCardText) return;
+            database.ref('game/currentCard').on('value', function(snapshot) {
+                const carta = snapshot.val();
+                if (carta && carta.nombre) {
+                    currentCardText.textContent = carta.nombre;
+                    currentCardText.style.opacity = 1;
+                } else {
+                    currentCardText.textContent = '';
+                    currentCardText.style.opacity = 0;
+                }
+            });
+        }
 // --- CHAT EN TIEMPO REAL ---
 function listenAndRenderChat() {
     const salaId = localStorage.getItem('salaId') || 'default';
