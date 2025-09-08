@@ -852,14 +852,13 @@
     </div>
 </div>
 
+
     <div class="loteria-container">
         <h1>Lotería Mexicana - Jugador</h1>
-        
         <div class="game-status" id="gameStatus">
             <div>Estado: <span id="statusText">Esperando al cantor...</span></div>
             <div>Cartas cantadas: <span id="cardsCount">0</span></div>
         </div>
-        
         <div class="player-info">
             <div class="player-tag otrojugador-tag">Jugador (Tú)</div>
             <div class="player1-info">
@@ -867,7 +866,6 @@
                 <span class="connection-dot dot-disconnected" id="callerStatus"></span>
             </div>
         </div>
-        
         <div class="main-content">
             <div class="info-section">
                 <div class="info-wrapper">
@@ -875,7 +873,11 @@
                     <div class="current-card" id="currentCard">
                         <p>Esperando primera carta...</p>
                     </div>
-                    
+                    <!-- Tabla de cartas cantadas en tiempo real -->
+                    <div class="drawn-cards-list" style="margin-top:20px;">
+                        <h3>Cartas ya Sacadas</h3>
+                        <div class="cards-grid" id="cardsGrid"></div>
+                    </div>
                     <div class="board-controls">
                         <button class="btn" id="requestBoardBtn">Generar Mi Mesa</button>
                         <button class="btn" id="clearBoardBtn">Limpiar Mesa</button>
@@ -883,8 +885,16 @@
                     </div>
                     <div class="board-message" id="boardMessage"></div>
                 </div>
+                <!-- Chat en tiempo real -->
+                <div class="chat-container" style="margin-top:24px;background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 8px;max-width:420px;width:100%;">
+                    <h3 style="color:var(--color-primary);margin-bottom:8px;font-size:1.2rem;">Chat de la Sala</h3>
+                    <div id="chatMessages" style="height:140px;overflow-y:auto;background:#181818;border-radius:8px;padding:8px 6px 8px 6px;margin-bottom:8px;font-size:0.98rem;"></div>
+                    <form id="chatForm" style="display:flex;gap:6px;">
+                        <input id="chatInput" type="text" placeholder="Escribe un mensaje..." maxlength="120" style="flex:1;padding:7px 10px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;outline:none;" autocomplete="off" />
+                        <button class="btn" type="submit" style="min-width:70px;padding:7px 0;">Enviar</button>
+                    </form>
+                </div>
             </div>
-
             <div class="board-section">
                 <div class="board-container">
                     <h3>Tu Mesa de Lotería</h3>
@@ -1011,30 +1021,103 @@ let selectedAvatar = null; // Avatar seleccionado
 let playerName = 'Jugador'; // Nombre del avatar seleccionado
 
 
-        // Referencias a elementos DOM
-        const playerBoardElement = document.getElementById('playerBoard');
-        const firebaseStatus = document.getElementById('firebaseStatus');
-        const callerStatus = document.getElementById('callerStatus');
-        const statusText = document.getElementById('statusText');
-        const cardsCount = document.getElementById('cardsCount');
-        const currentCardElement = document.getElementById('currentCard');
-        const boardMessage = document.getElementById('boardMessage');
-        const requestBoardBtn = document.getElementById('requestBoardBtn');
-        const clearBoardBtn = document.getElementById('clearBoardBtn');
-        const winnerAnnouncement = document.getElementById('winnerAnnouncement');
-        const winnerText = document.getElementById('winnerText');
-        const continueBtn = document.getElementById('continueBtn');
-        const matrixOverlay = document.getElementById('matrixOverlay');
-        const spotlight = document.getElementById('spotlight');
-        // Nuevas referencias para el modal del nombre
-        const playerNameModal = document.getElementById('playerNameModal');
-        const playerNameInput = document.getElementById('playerNameInput');
-        const submitNameBtn = document.getElementById('submitNameBtn');
-        const playerTagElement = document.querySelector('.player-tag.otrojugador-tag'); // Para actualizar el apodo en la interfaz
-        // Nuevas referencias para el modal de avatar
-const avatarModal = document.getElementById('avatarModal');
-const avatarGrid = document.getElementById('avatarGrid');
-const submitAvatarBtn = document.getElementById('submitAvatarBtn');
+
+    // Referencias a elementos DOM
+    const playerBoardElement = document.getElementById('playerBoard');
+    const firebaseStatus = document.getElementById('firebaseStatus');
+    const callerStatus = document.getElementById('callerStatus');
+    const statusText = document.getElementById('statusText');
+    const cardsCount = document.getElementById('cardsCount');
+    const currentCardElement = document.getElementById('currentCard');
+    const boardMessage = document.getElementById('boardMessage');
+    const requestBoardBtn = document.getElementById('requestBoardBtn');
+    const clearBoardBtn = document.getElementById('clearBoardBtn');
+    const winnerAnnouncement = document.getElementById('winnerAnnouncement');
+    const winnerText = document.getElementById('winnerText');
+    const continueBtn = document.getElementById('continueBtn');
+    const matrixOverlay = document.getElementById('matrixOverlay');
+    const spotlight = document.getElementById('spotlight');
+    // Nuevas referencias para el modal del nombre
+    const playerNameModal = document.getElementById('playerNameModal');
+    const playerNameInput = document.getElementById('playerNameInput');
+    const submitNameBtn = document.getElementById('submitNameBtn');
+    const playerTagElement = document.querySelector('.player-tag.otrojugador-tag'); // Para actualizar el apodo en la interfaz
+    // Nuevas referencias para el modal de avatar
+    const avatarModal = document.getElementById('avatarModal');
+    const avatarGrid = document.getElementById('avatarGrid');
+    const submitAvatarBtn = document.getElementById('submitAvatarBtn');
+    // Chat y cartas sacadas
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const cardsGrid = document.getElementById('cardsGrid');
+// --- CHAT EN TIEMPO REAL ---
+function listenAndRenderChat() {
+    const salaId = localStorage.getItem('salaId') || 'default';
+    const chatRef = database.ref(`salas/${salaId}/chat`);
+    chatRef.off();
+    chatRef.limitToLast(40).on('child_added', function(snapshot) {
+        const msg = snapshot.val();
+        renderChatMessage(msg);
+    });
+}
+
+function renderChatMessage(msg) {
+    if (!msg) return;
+    const div = document.createElement('div');
+    let name = msg.name || 'Jugador';
+    let avatar = avatares.find(a => a.nombre === name) || avatares[0];
+    div.innerHTML = `<span style="color:${avatar.color};font-weight:bold;"><i class="${avatar.icono}"></i> ${name}:</span> <span style="color:#fff;">${msg.text}</span>`;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+if (chatForm && chatInput) {
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+        const salaId = localStorage.getItem('salaId') || 'default';
+        const chatRef = database.ref(`salas/${salaId}/chat`);
+        chatRef.push({
+            name: playerName,
+            text: text,
+            avatarId: selectedAvatar ? selectedAvatar.id : 1,
+            timestamp: Date.now()
+        });
+        chatInput.value = '';
+    });
+}
+
+// --- TABLA DE CARTAS CANTADAS EN TIEMPO REAL ---
+function listenAndRenderDrawnCards() {
+    database.ref('game/drawnCards').off();
+    database.ref('game/drawnCards').on('value', function(snapshot) {
+        const drawn = snapshot.val() || [];
+        renderDrawnCardsTable(drawn);
+    });
+}
+
+function renderDrawnCardsTable(drawnNumbers) {
+    if (!cardsGrid) return;
+    cardsGrid.innerHTML = '';
+    drawnNumbers.forEach(num => {
+        const carta = cartasLoteria.find(c => c.numero === num);
+        if (!carta) return;
+        const cardItem = document.createElement('div');
+        cardItem.className = 'drawn-card-item';
+        const cardNumber = document.createElement('div');
+        cardNumber.className = 'card-number';
+        cardNumber.textContent = carta.numero;
+        const cardName = document.createElement('div');
+        cardName.className = 'card-name';
+        cardName.textContent = carta.nombre;
+        cardItem.appendChild(cardNumber);
+        cardItem.appendChild(cardName);
+        cardsGrid.appendChild(cardItem);
+    });
+    cardsGrid.scrollTop = cardsGrid.scrollHeight;
+}
 
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
@@ -1043,6 +1126,8 @@ const submitAvatarBtn = document.getElementById('submitAvatarBtn');
             initParticles();
             initDatabase();
             listenAndRenderUserList(); // NUEVO: Escuchar lista de usuarios conectados
+            listenAndRenderChat(); // Iniciar chat en tiempo real
+            listenAndRenderDrawnCards(); // Iniciar tabla de cartas cantadas
         });
 
         // Inicializar la aplicación
