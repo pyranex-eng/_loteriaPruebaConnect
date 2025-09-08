@@ -883,17 +883,10 @@ h1 {
         </div>
         
         <div class="main-content">
-    <div class="caller-section">
-        <!-- Chat en tiempo real -->
-        <div class="chat-container" style="margin-bottom:24px;background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 8px;max-width:420px;width:100%;">
-            <h3 style="color:var(--color-primary);margin-bottom:8px;font-size:1.2rem;">Chat de la Sala</h3>
-            <div id="chatMessages" style="height:140px;overflow-y:auto;background:#181818;border-radius:8px;padding:8px 6px 8px 6px;margin-bottom:8px;font-size:0.98rem;"></div>
-            <form id="chatForm" style="display:flex;gap:6px;">
-                <input id="chatInput" type="text" placeholder="Escribe un mensaje..." maxlength="120" style="flex:1;padding:7px 10px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;outline:none;" autocomplete="off" />
-                <button class="btn" type="submit" style="min-width:70px;padding:7px 0;">Enviar</button>
-            </form>
-        </div>
-        <div class="controls-wrapper">
+    <div class="caller-section" style="display:flex;flex-direction:column;height:100%;min-height:600px;">
+        <!-- User list with avatars and status -->
+        <div id="userListContainer" style="width:100%;max-width:420px;margin:0 auto 18px auto;z-index:20;position:relative;"></div>
+        <div class="controls-wrapper" style="flex-shrink:0;">
             <div class="controls">
                 <select class="carta-selector" id="cartaSelector">
                     <option value="">Selecciona una carta</option>
@@ -931,13 +924,68 @@ h1 {
             </div>
         </div>
 
-        <div class="drawn-cards-list">
+        <div class="drawn-cards-list" style="margin-bottom:18px;">
             <h3>Cartas ya Sacadas</h3>
             <div class="cards-grid" id="cardsGrid"></div>
         </div>
+        <!-- Chat en tiempo real (moved to bottom) -->
+        <div class="chat-container" style="margin-top:auto;background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 8px;max-width:420px;width:100%;">
+            <h3 style="color:var(--color-primary);margin-bottom:8px;font-size:1.2rem;">Chat de la Sala</h3>
+            <div id="chatMessages" style="height:140px;overflow-y:auto;background:#181818;border-radius:8px;padding:8px 6px 8px 6px;margin-bottom:8px;font-size:0.98rem;"></div>
+            <form id="chatForm" style="display:flex;gap:6px;">
+                <input id="chatInput" type="text" placeholder="Escribe un mensaje..." maxlength="120" style="flex:1;padding:7px 10px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;outline:none;" autocomplete="off" />
+                <button class="btn" type="submit" style="min-width:70px;padding:7px 0;">Enviar</button>
+            </form>
+        </div>
     </div>
-    
     <div class="board-section">
+// --- Lista de usuarios conectados (con avatares y estado) ---
+const userListContainer = document.getElementById('userListContainer');
+function listenAndRenderUserList() {
+    if (!userListContainer) return;
+    database.ref(`salas/${salaId}/players`).on('value', function(snapshot) {
+        const players = snapshot.val() || {};
+        // Mostrar cantor primero, luego jugadores
+        const cantor = players['cantor'] ? [{ id: 'cantor', ...players['cantor'] }] : [];
+        const jugadores = Object.entries(players)
+            .filter(([id, p]) => id !== 'cantor')
+            .map(([id, p]) => ({ id, ...p }));
+        const allPlayers = cantor.concat(jugadores);
+        renderUserList(allPlayers);
+    });
+}
+function renderUserList(players) {
+    if (!userListContainer) return;
+    if (!players.length) {
+        userListContainer.innerHTML = '';
+        return;
+    }
+    userListContainer.innerHTML = `
+        <div style="display:flex;gap:18px;align-items:center;justify-content:center;padding:10px 0 10px 0;flex-wrap:wrap;background:rgba(0,0,0,0.25);border-radius:12px;">
+            ${players.map(p => {
+                let avatar = (window.avatares || [])[parseInt(p.avatarId||p.avatar||1)-1] || (window.avatares ? window.avatares[0] : {icono:'fas fa-user',color:'#888'});
+                let extraClass = '';
+                if (p.id === 'cantor') extraClass = ' userlist-cantor';
+                let label = p.name || (p.id === 'cantor' ? 'Cantor' : 'Jugador');
+                if (p.id === 'cantor') label += ' (Tú)';
+                let statusDot = `<span class="connection-dot ${p.connected ? 'dot-connected' : 'dot-disconnected'}" style="margin-right:4px;"></span>`;
+                return `
+                    <div class="userlist-item${extraClass}" style="display:flex;flex-direction:column;align-items:center;min-width:60px;max-width:80px;">
+                        <div style="display:flex;align-items:center;gap:2px;">
+                            ${statusDot}
+                            <div class="avatar-icon" style="color:${avatar.color};font-size:2.2rem;">
+                                <i class="${avatar.icono}"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-name">${label}</div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+// Iniciar la escucha de la lista de usuarios conectados
+document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
         <div class="board-container">
             <h3>Tu Mesa de Lotería</h3>
             <div class="board-grid" id="playerBoard"></div>
