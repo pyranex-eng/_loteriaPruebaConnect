@@ -884,6 +884,15 @@ h1 {
         
         <div class="main-content">
     <div class="caller-section">
+        <!-- Chat en tiempo real -->
+        <div class="chat-container" style="margin-bottom:24px;background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 8px;max-width:420px;width:100%;">
+            <h3 style="color:var(--color-primary);margin-bottom:8px;font-size:1.2rem;">Chat de la Sala</h3>
+            <div id="chatMessages" style="height:140px;overflow-y:auto;background:#181818;border-radius:8px;padding:8px 6px 8px 6px;margin-bottom:8px;font-size:0.98rem;"></div>
+            <form id="chatForm" style="display:flex;gap:6px;">
+                <input id="chatInput" type="text" placeholder="Escribe un mensaje..." maxlength="120" style="flex:1;padding:7px 10px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;outline:none;" autocomplete="off" />
+                <button class="btn" type="submit" style="min-width:70px;padding:7px 0;">Enviar</button>
+            </form>
+        </div>
         <div class="controls-wrapper">
             <div class="controls">
                 <select class="carta-selector" id="cartaSelector">
@@ -1098,7 +1107,58 @@ h1 {
             initParticles();
             initBoard();
             checkFirebaseConnection();
+            listenAndRenderChat(); // Iniciar chat en tiempo real
         });
+// --- CHAT EN TIEMPO REAL ---
+function listenAndRenderChat() {
+    const salaId = localStorage.getItem('salaId') || 'default';
+    const chatRef = database.ref(`salas/${salaId}/chat`);
+    chatRef.off();
+    chatRef.limitToLast(40).on('child_added', function(snapshot) {
+        const msg = snapshot.val();
+        renderChatMessage(msg);
+    });
+}
+
+function renderChatMessage(msg) {
+    if (!msg) return;
+    const div = document.createElement('div');
+    let name = msg.name || 'Jugador';
+    let avatar = (window.avatares || [])[parseInt(msg.avatarId)-1] || (window.avatares ? window.avatares[0] : {icono:'fas fa-user',color:'#888'});
+    div.innerHTML = `<span style="color:${avatar.color};font-weight:bold;"><i class="${avatar.icono}"></i> ${name}:</span> <span style="color:#fff;">${msg.text}</span>`;
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+if (chatForm && chatInput) {
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+        const salaId = localStorage.getItem('salaId') || 'default';
+        const chatRef = database.ref(`salas/${salaId}/chat`);
+        let playerName = 'Cantor';
+        let avatarId = 1;
+        if (window.selectedAvatar && window.selectedAvatar.id) {
+            playerName = window.selectedAvatar.nombre;
+            avatarId = window.selectedAvatar.id;
+        } else if (window.playerName) {
+            playerName = window.playerName;
+        }
+        chatRef.push({
+            name: playerName,
+            text: text,
+            avatarId: avatarId,
+            timestamp: Date.now()
+        });
+        chatInput.value = '';
+    });
+}
 
         // Inicializar la aplicación
         function initApp() {
