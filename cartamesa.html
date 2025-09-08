@@ -1015,7 +1015,6 @@ document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
-    <script src="js/rondas.js"></script>
     <script>
         // Configuración de Firebase
         const firebaseConfig = {
@@ -1202,9 +1201,6 @@ document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
             checkFirebaseConnection();
             listenAndRenderChat(); // Iniciar chat en tiempo real
             listenAndRenderCurrentCardText();
-            // Integrar listeners de rondas y ganador
-            definirRondaListener({ rondaStatusId: 'rondaStatus' });
-            definirGanadorListener({ winnerTextId: 'winnerText', winnerAnnouncementId: 'winnerAnnouncement' });
         });
 
         // Mostrar el nombre de la carta actual debajo del título del tablero
@@ -1526,7 +1522,26 @@ function initBoard() {
 
         // Verificar si hay un ganador
 // Verificar si hay un ganador
-// ...eliminado: checkForWinner, verificarPatronesPrimeraRonda, verificarCartonLleno, showWinner (ahora en js/rondas.js)...
+function checkForWinner() {
+    if (gamePaused) return;
+    
+    // Verificar según la ronda actual
+    if (rondaActual === 'primera') {
+        // Verificar patrones de primera ronda (líneas, esquinas, etc.)
+        if (verificarPatronesPrimeraRonda()) {
+            // Guardar el patrón ganador y pausar el juego
+            pauseGame();
+            return;
+        }
+    } else if (rondaActual === 'segunda') {
+        // Verificar cartón lleno para la segunda ronda
+        if (verificarCartonLleno()) {
+            showWinner("¡Cartón lleno! ¡Lotería!!", 'segunda');
+            pauseGame();
+            return;
+        }
+    }
+}
 
    // Modificar las llamadas a showWinner en verificarPatronesPrimeraRonda
 function verificarPatronesPrimeraRonda() {
@@ -1603,7 +1618,60 @@ function verificarCartonLleno() {
 }
 
 // Modificación en la función showWinner para el cantor
+    function showWinner(message, tipoRonda, patron) {
+        let mensajeDetallado = message;
+        // Añadir detalles del patrón si está disponible
+        if (patron) {
+            if (patron.includes('horizontal')) {
+                const fila = parseInt(patron.split('-')[1]) + 1;
+                mensajeDetallado = `¡Línea horizontal ${fila} completa!`;
+            } else if (patron.includes('vertical')) {
+                const columna = parseInt(patron.split('-')[1]) + 1;
+                mensajeDetallado = `¡Línea vertical ${columna} completa!`;
+            } else if (patron.includes('diagonal-principal')) {
+                mensajeDetallado = "¡Diagonal principal completa!";
+            } else if (patron.includes('diagonal-secundaria')) {
+                mensajeDetallado = "¡Diagonal secundaria completa!";
+            } else if (patron.includes('cuatro-esquinas')) {
+                mensajeDetallado = "¡Cuatro esquinas completas!";
+            } else if (patron.includes('cuadrado')) {
+                const partes = patron.split('-');
+                const fila = parseInt(partes[1]) + 1;
+                const columna = parseInt(partes[2]) + 1;
+                mensajeDetallado = `¡Cuadrado completo (fila ${fila}, columna ${columna})!`;
+            } else if (patron === 'carton-lleno') {
+                mensajeDetallado = "¡Cartón lleno! ¡Lotería!4";
+            }
+        }
 
+        winnerText.textContent = mensajeDetallado;
+
+        // Configurar el texto del botón según la ronda
+        if (tipoRonda === 'primera') {
+            newGameBtn.textContent = 'Continuar la carta llena';
+        } else {
+            newGameBtn.textContent = 'Nuevo Juego';
+        }
+
+        winnerAnnouncement.style.display = 'block';
+
+        // Disparar confeti
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+
+        // Guardar en Firebase que hay un ganador con detalles del patrón
+        // Se asegura que el jugador sea "cantor"
+        database.ref('game/winner').set({
+            player: "cantor",
+            message: mensajeDetallado,
+            ronda: tipoRonda,
+            patron: patron, // Añadir información del patrón
+            timestamp: Date.now()
+        });
+    }
 
         // Sacar una carta específica
         function sacarCarta(numero) {
