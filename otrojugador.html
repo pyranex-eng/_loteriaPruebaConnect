@@ -884,6 +884,7 @@ function setupPresence() {
         <h1>Lotería Mexicana - Jugador</h1>
         <div class="game-status" id="gameStatus">
             <div>Estado: <span id="statusText">Esperando al cantor...</span></div>
+            <div>Ronda actual: <span id="rondaStatus" style="font-weight:bold;color:#ffde00;">Primera</span></div>
             <div>Cartas cantadas: <span id="cardsCount">0</span></div>
         </div>
         <div class="player-info">
@@ -1560,15 +1561,12 @@ function registerPlayer() {
         console.error("Error: playerId no está definido. No se puede registrar el jugador.");
         return;
     }
-    const playerRef = database.ref(`game/players/${playerId}`); // Usar playerId como clave
+    const playerRef = database.ref(`salas/${salaId}/players/${playerId}`); // Usar playerId como clave
     playerRef.set({
         name: playerName, // Usar el nombre ingresado por el jugador
         connected: true,
         timestamp: Date.now(),
-        board: playerBoard.map(card => ({
-            numero: card.carta ? card.carta.numero : null,
-            marcado: card.marcado
-        }))
+        avatarId: selectedAvatar ? selectedAvatar.id : 1
     });
     
     playerRef.onDisconnect().update({
@@ -1867,7 +1865,7 @@ function showWinner(message, tipoRonda, patron) {
     });
 }
 
-        // Actualizar la carta actual mostrada
+        // Actualizar la carta currentCard mostrada
         function updateCurrentCard(cardData) {
             const carta = cartasLoteria.find(c => c.numero === cardData.numero);
             if (!carta) return;

@@ -872,6 +872,7 @@ h1 {
         <div class="game-status" id="gameStatus">
             <div>Estado: <span id="statusText">Preparando juego...</span></div>
             <div>Jugadores conectados: <span id="playersCount">0</span></div>
+            <div>Ronda actual: <span id="rondaStatus" style="font-weight:bold;color:#ffde00;">Primera</span></div>
         </div>
         
         <div class="player-info">
@@ -1068,9 +1069,13 @@ document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
             const refCantor = database.ref(`salas/${salaId}/cantorConnected`);
             refCantor.set(true);
             refCantor.onDisconnect().set(false);
-            // Marcar presencia del cantor en la lista de jugadores
+            // Marcar presencia del cantor en la lista de jugadores, guardando avatarId si existe
+            let avatarId = 1;
+            if (window.selectedAvatar && window.selectedAvatar.id) {
+                avatarId = window.selectedAvatar.id;
+            }
             const refPlayers = database.ref(`salas/${salaId}/players/cantor`);
-            refPlayers.set({name:'Cantor',connected:true,timestamp:Date.now()});
+            refPlayers.set({name:'Cantor',connected:true,timestamp:Date.now(),avatarId: avatarId});
             refPlayers.onDisconnect().remove();
             // Al salir, limpiar chat y verificar si sala debe eliminarse
             window.addEventListener('beforeunload', () => {
@@ -1474,11 +1479,11 @@ function initBoard() {
         cardElement.addEventListener('click', function() {
             toggleMarkCard(i);
         });
-        }
+    }
     
-        // Guardar el tablero en Firebase
-        saveBoardToFirebase();
-        }
+    // Guardar el tablero en Firebase
+    saveBoardToFirebase();
+}
         
         function pauseGame() {
     gamePaused = true;
@@ -1888,7 +1893,7 @@ function detenerDesfileCartas() {
                         // Verificar si hay un ganador
                         checkForWinner();
                         
-                        // Guardar el estado del tablero en Firebase
+                        // Guardar el estado del tablero in Firebase
                         saveBoardToFirebase();
                         
                         showBoardMessage(`Carta ${cardNumber} marcada automáticamente`, "info");
@@ -2006,6 +2011,13 @@ function initDatabase() {
                 }
             }
             
+            // Actualizar ronda en la UI
+            if (gameData.ronda) {
+                const rondaStatus = document.getElementById('rondaStatus');
+                if (rondaStatus) {
+                    rondaStatus.textContent = (gameData.ronda === 'segunda') ? 'Segunda' : 'Primera';
+                }
+            }
         }
     });
 
@@ -2013,18 +2025,18 @@ function initDatabase() {
     database.ref('game/winner').on('value', function(snapshot) {
         if (snapshot.exists()) {
             const winnerData = snapshot.val();
-
             let mensajeGanador = "";
-            // Determina el mensaje basado en quién ganó
+            let avatarHtml = "";
+            // Buscar avatar del ganador
+            let avatar = (window.avatares || [])[parseInt(winnerData.avatarId||winnerData.avatar||1)-1] || (window.avatares ? window.avatares[0] : {icono:'fas fa-user',color:'#888'});
             if (winnerData.player === "cantor") {
                 mensajeGanador = "¡Felicidades! ¡Has ganado!";
+                avatarHtml = `<span style='color:${avatar.color};font-size:2.2rem;vertical-align:middle;'><i class='${avatar.icono}'></i></span> `;
             } else {
-                // Si el ganador no es el cantor, se asume que es otro jugador.
-                // Usar el 'name' guardado en winnerData o el ID si no hay nombre.
                 const winnerName = winnerData.name || winnerData.player;
-                mensajeGanador = `¡${winnerName} ha ganado!`;
+                avatarHtml = `<span style='color:${avatar.color};font-size:2.2rem;vertical-align:middle;'><i class='${avatar.icono}'></i></span> `;
+                mensajeGanador = `¡${avatarHtml}${winnerName} ha ganado!`;
             }
-
             // Añadir detalles del patrón si están disponibles
             if (winnerData.patron) {
                 if (winnerData.patron.includes('horizontal')) {
@@ -2048,24 +2060,16 @@ function initDatabase() {
                     mensajeGanador += " con cartón lleno";
                 }
             }
-
-            // Pausar el juego para el cantor si hay un ganador (sea el mismo o un jugador)
-            pauseGame(); // Esta función ya detiene el desfile y deshabilita controles
-            winnerText.textContent = mensajeGanador;
+            pauseGame();
+            winnerText.innerHTML = mensajeGanador;
             winnerAnnouncement.style.display = 'block';
-
-            // Mostrar un mensaje en el tablero del cantor indicando quién ganó
             showBoardMessage(`${winnerData.name || winnerData.player} ha ganado! Juego pausado.`, "info");
-
         } else {
-            // Si no hay ganador (la propiedad 'winner' fue eliminada), ocultar el anuncio
             winnerAnnouncement.style.display = 'none';
-            // Asegurarse de que el juego no esté pausado si no hay ganador
-            // Solo reactivar si el estado de pausa en Firebase también es falso
             database.ref('game/paused').once('value').then(snap => {
-                if (gamePaused && !snap.val()) { // Si localmente está pausado pero Firebase dice que no
+                if (gamePaused && !snap.val()) {
                     gamePaused = false;
-                    statusText.textContent = 'Juego en curso'; // O el estado anterior
+                    statusText.textContent = 'Juego en curso';
                     slideBtn.disabled = false;
                     randomBtn.disabled = false;
                     cartaSelector.disabled = false;
