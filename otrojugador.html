@@ -943,6 +943,7 @@ function setupPresence() {
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
+    <script src="js/rondas.js"></script>
     <script>
         // Configuración de Firebase (la misma que en cartamesa.html)
         const firebaseConfig = {
@@ -1178,6 +1179,9 @@ function renderDrawnCardsTable(drawnNumbers) {
             listenAndRenderDrawnCards(); // Iniciar tabla de cartas cantadas
             setTimeout(setupPresence, 500); // Espera a que playerId esté listo
             listenAndRenderCurrentCardText();
+            // Integrar listeners de rondas y ganador
+            definirRondaListener({ rondaStatusId: 'rondaStatus' });
+            definirGanadorListener({ winnerTextId: 'winnerText', winnerAnnouncementId: 'winnerAnnouncement' });
         });
 
         // Mostrar el nombre de la carta actual debajo del título del tablero
@@ -1706,23 +1710,7 @@ function loadBoardFromLocal(boardData) {
         }
 
         // Verificar si hay un ganador
-        function checkForWinner() {
-            if (gamePaused) return;
-
-            // Verificar según la ronda actual
-            if (rondaActual === 'primera') {
-                if (verificarPatronesPrimeraRonda()) {
-                    pauseGame();
-                    return;
-                }
-            } else if (rondaActual === 'segunda') {
-                if (verificarCartonLleno()) {
-                    showWinner("¡Cartón lleno! ¡Lotería!!!!", 'segunda', 'carton-lleno');
-                    pauseGame();
-                    return;
-                }
-            }
-        }
+        // ...eliminado: checkForWinner, verificarPatronesPrimeraRonda, verificarCartonLleno, showWinner (ahora en js/rondas.js)...
 
 function showWinner(message, tipoRonda, patron) {
     let mensajeDetallado = message;
