@@ -1101,7 +1101,9 @@ function listenAndRenderDrawnCards() {
 function renderDrawnCardsTable(drawnNumbers) {
     if (!cardsGrid) return;
     cardsGrid.innerHTML = '';
-    drawnNumbers.forEach(num => {
+    // Mostrar la carta más reciente primero (al inicio de la grilla)
+    const reversed = [...drawnNumbers].reverse();
+    reversed.forEach(num => {
         const carta = cartasLoteria.find(c => c.numero === num);
         if (!carta) return;
         const cardItem = document.createElement('div');
@@ -1116,7 +1118,8 @@ function renderDrawnCardsTable(drawnNumbers) {
         cardItem.appendChild(cardName);
         cardsGrid.appendChild(cardItem);
     });
-    cardsGrid.scrollTop = cardsGrid.scrollHeight;
+    // Hacer scroll al inicio para mostrar la carta más reciente
+    cardsGrid.scrollTop = 0;
 }
 
         // Inicializar la aplicación
