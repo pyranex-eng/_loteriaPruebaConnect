@@ -874,9 +874,9 @@
                         <p>Esperando primera carta...</p>
                     </div>
                     <!-- Tabla de cartas cantadas en tiempo real -->
-                    <div class="drawn-cards-list" style="margin-top:20px;">
-                        <h3>Cartas ya Sacadas</h3>
-                        <div class="cards-grid" id="cardsGrid"></div>
+                    <div class="drawn-cards-list" style="margin-top:20px;padding:20px;background-color:rgba(0,0,0,0.2);border-radius:10px;width:100%;max-width:800px;margin:20px auto 0;position:relative;order:3;">
+                        <h3 style="color:var(--color-primary);text-align:center;margin-bottom:20px;font-size:1.5rem;">Cartas ya Sacadas</h3>
+                        <div class="cards-grid" id="cardsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px;max-height:300px;overflow-y:auto;padding:15px;border:1px solid rgba(200,16,46,0.5);border-radius:8px;"></div>
                     </div>
                     <div class="board-controls">
                         <button class="btn" id="requestBoardBtn">Generar Mi Mesa</button>
@@ -1108,12 +1108,28 @@ function renderDrawnCardsTable(drawnNumbers) {
         if (!carta) return;
         const cardItem = document.createElement('div');
         cardItem.className = 'drawn-card-item';
+        cardItem.style.backgroundColor = '#2b2b2b';
+        cardItem.style.padding = '10px';
+        cardItem.style.borderRadius = '8px';
+        cardItem.style.display = 'flex';
+        cardItem.style.alignItems = 'center';
+        cardItem.style.gap = '10px';
+        cardItem.style.border = '1px solid var(--color-primary)';
+        cardItem.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+        cardItem.onmouseover = () => { cardItem.style.transform = 'translateY(-2px)'; cardItem.style.boxShadow = '0 4px 8px rgba(200,16,46,0.2)'; };
+        cardItem.onmouseout = () => { cardItem.style.transform = ''; cardItem.style.boxShadow = ''; };
         const cardNumber = document.createElement('div');
         cardNumber.className = 'card-number';
         cardNumber.textContent = carta.numero;
+        cardNumber.style.fontWeight = 'bold';
+        cardNumber.style.color = 'var(--color-primary)';
+        cardNumber.style.fontSize = '1.1rem';
         const cardName = document.createElement('div');
         cardName.className = 'card-name';
         cardName.textContent = carta.nombre;
+        cardName.style.flexGrow = '1';
+        cardName.style.color = 'var(--color-text-light)';
+        cardName.style.fontSize = '1rem';
         cardItem.appendChild(cardNumber);
         cardItem.appendChild(cardName);
         cardsGrid.appendChild(cardItem);

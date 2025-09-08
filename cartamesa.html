@@ -884,8 +884,13 @@ h1 {
         
         <div class="main-content">
     <div class="caller-section">
-        <!-- Chat en tiempo real -->
-        <div class="chat-container" style="margin-bottom:24px;background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 8px;max-width:420px;width:100%;">
+        <!-- Tabla de cartas ya sacadas -->
+        <div class="drawn-cards-list">
+            <h3>Cartas ya Sacadas</h3>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+        <!-- Chat en tiempo real debajo de la tabla -->
+        <div class="chat-container" style="margin-top:18px;background:rgba(0,0,0,0.18);border-radius:10px;padding:12px 8px;max-width:420px;width:100%;">
             <h3 style="color:var(--color-primary);margin-bottom:8px;font-size:1.2rem;">Chat de la Sala</h3>
             <div id="chatMessages" style="height:140px;overflow-y:auto;background:#181818;border-radius:8px;padding:8px 6px 8px 6px;margin-bottom:8px;font-size:0.98rem;"></div>
             <form id="chatForm" style="display:flex;gap:6px;">
