@@ -939,6 +939,21 @@ h1 {
         </div>
     </div>
     <div class="board-section">
+    <div class="board-section">
+        <div class="board-container">
+            <h3>Tu Mesa de Lotería</h3>
+            <div id="currentCardText" style="margin: 2px 0 10px 0; color: #ccc; font-size: 1.05rem; min-height: 1.2em;"></div>
+            <div class="board-grid" id="playerBoard"></div>
+            <div class="board-controls">
+                <button class="btn" id="distributeBtn">Generar Mi Mesa</button>
+                <button class="btn" id="clearMarksBtn">Limpiar Mesa</button>
+                <button class="btn" id="resetGameBtn">Reiniciar Juego</button>
+                <a href="otrojugador.html" class="btn" id="secondPlayerLink">Abrir otro Jugador</a>
+            </div>
+            <div class="board-message" id="boardMessage"></div>
+        </div>
+
+<script>
 // --- Lista de usuarios conectados (con avatares y estado) ---
 const userListContainer = document.getElementById('userListContainer');
 function listenAndRenderUserList() {
@@ -986,18 +1001,7 @@ function renderUserList(players) {
 }
 // Iniciar la escucha de la lista de usuarios conectados
 document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
-        <div class="board-container">
-            <h3>Tu Mesa de Lotería</h3>
-            <div id="currentCardText" style="margin: 2px 0 10px 0; color: #ccc; font-size: 1.05rem; min-height: 1.2em;"></div>
-            <div class="board-grid" id="playerBoard"></div>
-            <div class="board-controls">
-                <button class="btn" id="distributeBtn">Generar Mi Mesa</button>
-                <button class="btn" id="clearMarksBtn">Limpiar Mesa</button>
-                <button class="btn" id="resetGameBtn">Reiniciar Juego</button>
-                <a href="otrojugador.html" class="btn" id="secondPlayerLink">Abrir otro Jugador</a>
-            </div>
-            <div class="board-message" id="boardMessage"></div>
-        </div>
+</script>
     </div>
 </div>
     </div>
