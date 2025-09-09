@@ -8,9 +8,26 @@ function setupPresence() {
         if (snap.val() === true && playerId) {
             // Marcar presencia del jugador
             const refPlayer = database.ref(`salas/${salaId}/players/${playerId}`);
-            refPlayer.set({name: playerName, connected: true, timestamp: Date.now()});
+            refPlayer.set({name: playerName, connected: true, timestamp: Date.now(), avatarId: selectedAvatar ? selectedAvatar.id : 1});
             refPlayer.onDisconnect().remove();
-            // Al salir, limpiar chat y verificar si sala debe eliminarse
+
+            // Lógica para borrar la sala si es el último jugador (onDisconnect)
+            const refPlayers = database.ref(`salas/${salaId}/players`);
+            refPlayers.on('value', function(snapshot) {
+                const players = snapshot.val() || {};
+                // Si solo queda este jugador, programa el borrado de la sala al desconectarse
+                if (Object.keys(players).length === 1 && players[playerId]) {
+                    // Solo este jugador queda
+                    const salaRef = database.ref(`salas/${salaId}`);
+                    salaRef.onDisconnect().remove();
+                } else {
+                    // Si hay más de uno, cancela el onDisconnect de la sala
+                    const salaRef = database.ref(`salas/${salaId}`);
+                    salaRef.onDisconnect().cancel();
+                }
+            });
+
+            // Al salir, limpiar chat y verificar si sala debe eliminarse (por si acaso)
             window.addEventListener('beforeunload', () => {
                 database.ref(`salas/${salaId}/players/${playerId}`).remove();
                 database.ref(`salas/${salaId}/chat`).remove();
@@ -1677,7 +1694,7 @@ function loadBoardFromLocal(boardData) {
                 return;
             }
 
-            playerBoard[index].marcado = !playerBoard[index].marcado;
+            playerBoard[index].marcado = ! playerBoard[index].marcado;
 
             if (playerBoard[index].marcado) {
                 playerBoard[index].elemento.classList.add('marked');
@@ -1749,23 +1766,40 @@ function showWinner(message, tipoRonda, patron) {
         }
     }
 
-    // Detectar empate
     database.ref('game/winner').once('value').then(function(snapshot) {
         const winnerData = snapshot.val();
-        if (winnerData && winnerData.player && winnerData.player !== playerId) {
-            // Ya hay un ganador diferente, marcar empate
-            const empateObj = {
+        if (winnerData && (winnerData.empate || (Array.isArray(winnerData.players) && winnerData.players.length > 1))) {
+            // Ya hay empate, agregar este jugador si no está
+            let players = winnerData.players || [];
+            let names = winnerData.names || [];
+            if (!players.includes(playerId)) {
+                players.push(playerId);
+                names.push(playerName);
+                database.ref('game/winner').set({
+                    empate: true,
+                    players: players,
+                    names: names,
+                    patron: patron,
+                    ronda: tipoRonda,
+                    timestamp: Date.now()
+                });
+            }
+            winnerText.textContent = `¡Empate entre ${names.join(', ')}!`;
+        } else if (winnerData && winnerData.player && winnerData.player !== playerId) {
+            // Ya hay un ganador diferente, crear empate con ambos
+            const players = [winnerData.player, playerId];
+            const names = [winnerData.name || 'Jugador', playerName];
+            database.ref('game/winner').set({
                 empate: true,
-                players: [winnerData.player, playerId],
-                names: [winnerData.name || 'Jugador', playerName],
+                players: players,
+                names: names,
                 patron: patron,
                 ronda: tipoRonda,
                 timestamp: Date.now()
-            };
-            database.ref('game/winner').set(empateObj);
-            winnerText.textContent = `¡Empate entre ${winnerData.name || 'Jugador'} y ${playerName}!`;
+            });
+            winnerText.textContent = `¡Empate entre ${names.join(', ')}!`;
         } else if (winnerData && winnerData.player === playerId) {
-            // Este jugador ya es el ganador, solo mostrar mensaje
+            // Este jugador ya es el ganador
             winnerText.textContent = mensajeDetallado;
         } else {
             // No hay ganador, guardar este jugador como ganador
