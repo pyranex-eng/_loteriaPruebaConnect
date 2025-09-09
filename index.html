@@ -404,7 +404,7 @@
             }
             .btn {
                 width: 100%;
-                max-width: 300px;
+                max-width: 300px; /* Limita el ancho en móviles para que no sean demasiado grandes */
             }
             .floating-card {
                 display: none;
@@ -467,7 +467,6 @@
             <div class="floating-element"></div>
         </div>
         
-        <!-- Cartas de lotería flotantes -->
         <div class="floating-card"></div>
         <div class="floating-card"></div>
         <div class="floating-card"></div>
@@ -482,32 +481,20 @@
             <p class="subtitle">¡Vive la emoción del juego tradicional mexicano con un toque digital! Disfruta de partidas multijugador en tiempo real, diseños auténticos y toda la diversión de la lotería desde cualquier dispositivo.</p>
         </header>
 
-        <!-- En index.html, modificar los enlaces existentes: -->
-<div class="content">
-    <div class="card">
-        <i class="fas fa-user card-icon"></i>
-        <h2>Modo Jugador</h2>
-        <p>Únete a una partida y compite por completar tu tablero. Marca tus cartas, forma patrones ganadores y grita ¡Lotería! antes que los demás.</p>
-        <a href="salas.html?role=jugador" class="btn"><i class="fas fa-play"></i> Jugar Ahora</a>
-    </div>
-    
-    <div class="card">
-        <i class="fas fa-crown card-icon"></i>
-        <h2>Modo Cantor</h2>
-        <p>Dirige la partida como cantor. Barajea las cartas, anúncialas y controla el ritmo del juego. Gestiona múltiples jugadores en tiempo real.</p>
-        <a href="salas.html?role=cantor" class="btn btn-caller"><i class="fas fa-microphone"></i> Ser Cantor</a>
-    </div>
-    
-    <div class="card">
-        <i class="fas fa-book card-icon"></i>
-        <h2>Aprende a Jugar</h2>
-        <p>Descubre las reglas, patrones ganadores y estrategias de la Lotería Mexicana. Perfecto para principiantes y expertos que quieran mejorar.</p>
-        <a href="instrucciones.html" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> Instrucciones</a>
-    </div>
-</div>
-        
-        <div class="buttons">
-            <a href="salas.html" class="btn"><i class="fas fa-users"></i> Unirse o Crear Sala</a>
+        <div class="content">
+            <div class="card">
+                <i class="fas fa-users card-icon"></i>
+                <h2>Unirse o Crear Sala</h2>
+                <p>Únete a una partida existente o crea una nueva para jugar con amigos y familiares. Decide si quieres ser jugador o cantor y comienza la diversión.</p>
+                <a href="salas.html" class="btn"><i class="fas fa-users"></i> Unirse o Crear Sala</a>
+            </div>
+            
+            <div class="card">
+                <i class="fas fa-book card-icon"></i>
+                <h2>Instrucciones</h2>
+                <p>Descubre las reglas, patrones ganadores y estrategias de la Lotería Mexicana. Perfecto para principiantes y expertos que quieran mejorar.</p>
+                <a href="instrucciones.html" class="btn btn-secondary"><i class="fas fa-graduation-cap"></i> Instrucciones</a>
+            </div>
         </div>
     </div>
     
