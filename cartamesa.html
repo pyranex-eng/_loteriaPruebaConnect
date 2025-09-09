@@ -961,13 +961,11 @@ function listenAndRenderUserList() {
     if (!userListContainer) return;
     database.ref(`salas/${salaId}/players`).on('value', function(snapshot) {
         const players = snapshot.val() || {};
-        // Mostrar cantor primero, luego jugadores
-        const cantor = players['cantor'] ? [{ id: 'cantor', ...players['cantor'] }] : [];
-        const jugadores = Object.entries(players)
-            .filter(([id, p]) => id !== 'cantor')
+        // Filtrar solo conectados
+        const connectedPlayers = Object.entries(players)
+            .filter(([_, p]) => p.connected)
             .map(([id, p]) => ({ id, ...p }));
-        const allPlayers = cantor.concat(jugadores);
-        renderUserList(allPlayers);
+        renderUserList(connectedPlayers);
     });
 }
 function renderUserList(players) {
@@ -1077,19 +1075,35 @@ document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
             const refPlayers = database.ref(`salas/${salaId}/players/cantor`);
             refPlayers.set({name:'Cantor',connected:true,timestamp:Date.now(),avatarId: avatarId});
             refPlayers.onDisconnect().remove();
-            // Al salir, limpiar chat y verificar si sala debe eliminarse
-            window.addEventListener('beforeunload', () => {
-                database.ref(`salas/${salaId}/chat`).remove();
-                refCantor.set(false);
-                refPlayers.remove();
-                setTimeout(() => {
-                    database.ref(`salas/${salaId}/players`).once('value').then(snapPlayers => {
-                        if (!snapPlayers.exists() || Object.keys(snapPlayers.val()||{}).length === 0) {
-                            database.ref(`salas/${salaId}`).remove();
-                        }
-                    });
-                }, 1000);
+
+            // Lógica para borrar la sala si es el último (onDisconnect)
+            const refPlayersList = database.ref(`salas/${salaId}/players`);
+            refPlayersList.on('value', function(snapshot) {
+                const players = snapshot.val() || {};
+                if (Object.keys(players).length === 1 && players['cantor']) {
+                    // Solo queda el cantor
+                    const salaRef = database.ref(`salas/${salaId}`);
+                    salaRef.onDisconnect().remove();
+                } else {
+                    // Si hay más de uno, cancela el onDisconnect de la sala
+                    const salaRef = database.ref(`salas/${salaId}`);
+                    salaRef.onDisconnect().cancel();
+                }
             });
+
+    // Al salir, limpiar chat y verificar si sala debe eliminarse
+    window.addEventListener('beforeunload', () => {
+        database.ref(`salas/${salaId}/chat`).remove();
+        refCantor.set(false);
+        refPlayers.remove();
+        setTimeout(() => {
+            database.ref(`salas/${salaId}/players`).once('value').then(snapPlayers => {
+                if (!snapPlayers.exists() || Object.keys(snapPlayers.val()||{}).length === 0) {
+                    database.ref(`salas/${salaId}`).remove();
+                }
+            });
+        }, 1000);
+    });
         }
 
         const cartasLoteria = [

@@ -823,7 +823,7 @@ function setupPresence() {
     // --- Lista de usuarios conectados ---
     const userListContainer = document.getElementById('userListContainer');
     function listenAndRenderUserList() {
-        database.ref('game/players').on('value', function(snapshot) {
+        database.ref(`salas/${salaId}/players`).on('value', function(snapshot) {
             const players = snapshot.val() || {};
             // Filtrar solo conectados
             const connectedPlayers = Object.entries(players)
@@ -1746,8 +1746,8 @@ function showWinner(message, tipoRonda, patron) {
     if (patron) {
         if (patron.includes('horizontal')) {
             const fila = parseInt(patron.split('-')[1]) + 1;
-            mensajeDetallado = `¡Línea horizontal ${fila} completa!`;
-        } else if (patron.includes('vertical')) {
+            mensajeDetallado = `¡Línea horizontal ${fila} completa!`;}
+         else if (patron.includes('vertical')) {
             const columna = parseInt(patron.split('-')[1]) + 1;
             mensajeDetallado = `¡Línea vertical ${columna} completa!`;
         } else if (patron === 'diagonal-principal') {
