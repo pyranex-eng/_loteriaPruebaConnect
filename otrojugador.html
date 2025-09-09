@@ -1749,35 +1749,51 @@ function showWinner(message, tipoRonda, patron) {
         }
     }
 
-    winnerText.textContent = mensajeDetallado;
-
-    if (tipoRonda === 'primera') {
-        continueBtn.textContent = 'Aceptar y esperar al Cantor';
-    } else {
-        continueBtn.textContent = 'Nuevo Juego';
-    }
-
-    winnerAnnouncement.style.display = 'block';
-
-    confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#c8102e', '#006847', '#ffde00', '#ffffff', '#000000']
+    // Detectar empate
+    database.ref('game/winner').once('value').then(function(snapshot) {
+        const winnerData = snapshot.val();
+        if (winnerData && winnerData.player && winnerData.player !== playerId) {
+            // Ya hay un ganador diferente, marcar empate
+            const empateObj = {
+                empate: true,
+                players: [winnerData.player, playerId],
+                names: [winnerData.name || 'Jugador', playerName],
+                patron: patron,
+                ronda: tipoRonda,
+                timestamp: Date.now()
+            };
+            database.ref('game/winner').set(empateObj);
+            winnerText.textContent = `¡Empate entre ${winnerData.name || 'Jugador'} y ${playerName}!`;
+        } else if (winnerData && winnerData.player === playerId) {
+            // Este jugador ya es el ganador, solo mostrar mensaje
+            winnerText.textContent = mensajeDetallado;
+        } else {
+            // No hay ganador, guardar este jugador como ganador
+            database.ref('game/winner').set({
+                player: playerId,
+                name: playerName,
+                message: mensajeDetallado,
+                ronda: tipoRonda,
+                patron: patron,
+                timestamp: Date.now()
+            });
+            winnerText.textContent = mensajeDetallado;
+        }
+        if (tipoRonda === 'primera') {
+            continueBtn.textContent = 'Aceptar y esperar al Cantor';
+        } else {
+            continueBtn.textContent = 'Nuevo Juego';
+        }
+        winnerAnnouncement.style.display = 'block';
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#c8102e', '#006847', '#ffde00', '#ffffff', '#000000']
+        });
+        database.ref('game/paused').set(true);
+        pauseGame();
     });
-
-    // Guardar en Firebase que hay un ganador con detalles del patrón
-    database.ref('game/winner').set({
-        player: playerId, // Ahora se envía el ID único del jugador
-        name: playerName, // También se envía el nombre del jugador
-        message: mensajeDetallado,
-        ronda: tipoRonda,
-        patron: patron,
-        timestamp: Date.now()
-    });
-
-    database.ref('game/paused').set(true);
-    pauseGame();
 }
 
         function verificarPatronesPrimeraRonda() {
