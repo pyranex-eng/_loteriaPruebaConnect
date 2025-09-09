@@ -1,7 +1,8 @@
 <script>
+const salaId = localStorage.getItem('salaId') || 'default';
+
 // --- Presencia robusta para jugadores ---
 function setupPresence() {
-    const salaId = localStorage.getItem('salaId') || 'default';
     const connectedRef = firebase.database().ref('.info/connected');
     connectedRef.on('value', function(snap) {
         if (snap.val() === true && playerId) {
@@ -802,7 +803,6 @@ function setupPresence() {
     <div class="connections" id="connections"></div>
 
     <script>
-    // ...existing code...
     // --- Lista de usuarios conectados ---
     const userListContainer = document.getElementById('userListContainer');
     function listenAndRenderUserList() {
