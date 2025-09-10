@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script type="module" src="firebase-conn.js"></script>
   <style>
-    :root {
+  :root {
       --color-primary: #006847;
       --color-secondary: #ffde00;
       --color-accent: #c8102e;
@@ -17,532 +17,462 @@
       --color-bg-dark: #121212;
       --color-card-bg: rgba(255, 255, 255, 0.05);
     }
-    
     * {
-      margin: 0;
-      padding: 0;
+  margin: 0;
+  padding: 0;
       box-sizing: border-box;
     }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--color-bg-dark);
+  body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--color-bg-dark);
       color: var(--color-text-light);
       min-height: 100vh;
-      overflow-x: hidden;
+  overflow-x: hidden;
       position: relative;
-      background-image: 
+  background-image: 
         radial-gradient(circle at 20% 30%, rgba(0, 104, 71, 0.15) 0%, transparent 30%),
         radial-gradient(circle at 80% 70%, rgba(200, 16, 46, 0.15) 0%, transparent 30%),
         radial-gradient(circle at 40% 80%, rgba(255, 222, 0, 0.1) 0%, transparent 30%);
     }
-    
     /* Efectos de fondo */
-    .background-overlay {
+  .background-overlay {
       position: fixed;
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
       z-index: 0;
-      overflow: hidden;
+  overflow: hidden;
     }
-
-    .floating-elements {
+  .floating-elements {
       position: absolute;
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
       z-index: 1;
-      overflow: hidden;
+  overflow: hidden;
     }
-    
-    .floating-element {
+  .floating-element {
       position: absolute;
-      border-radius: 50%;
-      filter: blur(40px);
-      animation: float 15s infinite ease-in-out;
-      opacity: 0.1;
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: float 15s infinite ease-in-out;
+  opacity: 0.1;
     }
-    
-    .floating-element:nth-child(1) { 
-      width: 200px; height: 200px; top: 15%; left: 10%; 
-      background: var(--color-primary);
-      animation-delay: 0s; 
+  .floating-element:nth-child(1) { 
+  width: 200px; height: 200px; top: 15%; left: 10%; 
+  background: var(--color-primary);
+  animation-delay: 0s; 
     }
-    .floating-element:nth-child(2) { 
-      width: 250px; height: 250px; bottom: 20%; right: 15%; 
-      background: var(--color-accent);
-      animation-delay: 5s; 
+  .floating-element:nth-child(2) { 
+  width: 250px; height: 250px; bottom: 20%; right: 15%; 
+  background: var(--color-accent);
+  animation-delay: 5s; 
     }
-    .floating-element:nth-child(3) { 
-      width: 150px; height: 150px; top: 45%; right: 30%; 
-      background: var(--color-secondary);
-      animation-delay: 10s; 
+  .floating-element:nth-child(3) { 
+  width: 150px; height: 150px; top: 45%; right: 30%; 
+  background: var(--color-secondary);
+  animation-delay: 10s; 
     }
-    .floating-element:nth-child(4) { 
-      width: 180px; height: 180px; bottom: 10%; left: 25%; 
-      background: var(--color-primary);
-      animation-delay: 7s; 
+  .floating-element:nth-child(4) { 
+  width: 180px; height: 180px; bottom: 10%; left: 25%; 
+  background: var(--color-primary);
+  animation-delay: 7s; 
     }
-    
     @keyframes float {
       0% { transform: translateY(0) rotate(0deg) scale(1); }
       50% { transform: translateY(-30px) rotate(180deg) scale(1.1); }
       100% { transform: translateY(0) rotate(360deg) scale(1); }
     }
-
     /* Container principal */
-    .main-container {
+  .main-container {
       position: relative;
       z-index: 2;
-      max-width: 800px;
-      margin: 40px auto;
-      background: rgba(30, 30, 30, 0.9);
-      border-radius: 20px;
+  max-width: 800px;
+  margin: 40px auto;
+  background: rgba(30, 30, 30, 0.9);
+  border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      padding: 30px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      animation: fadeInUp 0.8s ease-out;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInUp 0.8s ease-out;
     }
-    
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
     }
-    
     h2 {
-      text-align: center;
+  text-align: center;
       color: var(--color-secondary);
-      font-size: 2.5rem;
-      margin-bottom: 25px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 8px rgba(255, 222, 0, 0.3);
+  font-size: 2.5rem;
+  margin-bottom: 25px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(255, 222, 0, 0.3);
     }
-    
     /* Modal de selección de avatar */
-    .avatar-modal {
+  .avatar-modal {
       position: fixed;
       top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.85);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
       z-index: 1000;
     }
-    
-    .avatar-content {
-      background: var(--color-bg-dark);
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 600px;
+  .avatar-content {
+  background: var(--color-bg-dark);
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 2px solid var(--color-primary);
-      text-align: center;
-      animation: scaleIn 0.5s ease-out;
+  border: 2px solid var(--color-primary);
+  text-align: center;
+  animation: scaleIn 0.5s ease-out;
     }
-    
     @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
     }
-    
-    .avatar-content h3 {
+  .avatar-content h3 {
       color: var(--color-secondary);
-      margin-bottom: 20px;
-      font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
     }
-    
-    .avatar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  .avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
       gap: 15px;
-      margin-bottom: 25px;
-      max-height: 300px;
-      overflow-y: auto;
-      padding: 10px;
+  margin-bottom: 25px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
     }
-    
-    .avatar-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  .avatar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
       cursor: pointer;
-      padding: 10px;
-      border-radius: 10px;
-      transition: all 0.3s;
-      background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.05);
     }
-    
-    .avatar-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-5px);
+  .avatar-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
     }
-    
-    .avatar-item.selected {
-      background: rgba(0, 104, 71, 0.2);
-      transform: scale(1.05);
-      border: 2px solid var(--color-primary);
+  .avatar-item.selected {
+  background: rgba(0, 104, 71, 0.2);
+  transform: scale(1.05);
+  border: 2px solid var(--color-primary);
     }
-    
-    .avatar-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
+  .avatar-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
     }
-    
-    .avatar-name {
-      font-size: 0.9rem;
-      text-align: center;
+  .avatar-name {
+  font-size: 0.9rem;
+  text-align: center;
     }
-    
-    .avatar-actions {
-      display: flex;
-      justify-content: center;
+  .avatar-actions {
+  display: flex;
+  justify-content: center;
       gap: 15px;
     }
-    
-    .avatar-btn {
-      padding: 12px 25px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
+  .avatar-btn {
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s;
-      border: none;
+  transition: all 0.3s;
+  border: none;
     }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, var(--color-primary), #119565);
+  .btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), #119565);
       color: white;
     }
-    
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
+  .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
       color: var(--color-text-light);
     }
-    
-    .avatar-btn:hover {
-      transform: translateY(-2px);
+  .avatar-btn:hover {
+  transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
-    
     /* Formulario crear sala */
-    .crear-sala {
-      display: flex;
-      flex-direction: column;
+  .crear-sala {
+  display: flex;
+  flex-direction: column;
       gap: 15px;
-      margin-bottom: 30px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 15px;
-      padding: 20px;
+  margin-bottom: 30px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  padding: 20px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      animation: slideIn 0.5s 0.2s both;
+  animation: slideIn 0.5s 0.2s both;
     }
-    
     @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
     }
-    
-    .sala-preview {
-      display: flex;
-      align-items: center;
+  .sala-preview {
+  display: flex;
+  align-items: center;
       gap: 15px;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      margin-bottom: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin-bottom: 15px;
     }
-    
-    .sala-preview-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      background: rgba(255, 255, 255, 0.1);
+  .sala-preview-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
     }
-    
-    .sala-preview-info {
-      flex: 1;
+  .sala-preview-info {
+  flex: 1;
     }
-    
-    .sala-preview-name {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin-bottom: 5px;
+  .sala-preview-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
     }
-    
-    .sala-preview-creator {
-      font-size: 0.9rem;
+  .sala-preview-creator {
+  font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.7);
     }
-    
-    .crear-sala button {
-      background: linear-gradient(135deg, var(--color-primary), #119565);
+  .crear-sala button {
+  background: linear-gradient(135deg, var(--color-primary), #119565);
       color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
       gap: 8px;
     }
-    
-    .crear-sala button:hover {
-      transform: translateY(-2px);
+  .crear-sala button:hover {
+  transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 104, 71, 0.4);
     }
-    
     /* Lista de salas */
-    .sala-lista {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 15px;
-      padding: 20px;
+  .sala-lista {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  padding: 20px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.8s 0.4s both;
+  animation: fadeIn 0.8s 0.4s both;
     }
-    
-    .sala-lista h3 {
+  .sala-lista h3 {
       color: var(--color-accent);
-      margin-bottom: 20px;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
     }
-    
-    .sala {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.3s;
-      animation: slideInRight 0.5s both;
+  .sala {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s;
+  animation: slideInRight 0.5s both;
       position: relative;
-      overflow: hidden;
+  overflow: hidden;
     }
-    
-    .sala::before {
-      content: '';
+  .sala::before {
+  content: '';
       position: absolute;
       top: 0;
-      left: 0;
-      width: 5px;
-      height: 100%;
-      background: linear-gradient(to bottom, var(--color-primary), var(--color-accent));
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--color-primary), var(--color-accent));
     }
-    
     @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(20px); }
-      to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
     }
-    
-    .sala:hover {
-      transform: translateY(-3px);
+  .sala:hover {
+  transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.08);
     }
-    
-    .sala-info {
-      display: flex;
-      align-items: center;
+  .sala-info {
+  display: flex;
+  align-items: center;
       gap: 15px;
-      flex: 1;
+  flex: 1;
     }
-    
-    .sala-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      background: rgba(255, 255, 255, 0.1);
+  .sala-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  background: rgba(255, 255, 255, 0.1);
     }
-    
-    .sala-details {
-      display: flex;
-      flex-direction: column;
+  .sala-details {
+  display: flex;
+  flex-direction: column;
     }
-    
-    .sala-name {
-      font-weight: bold;
+  .sala-name {
+  font-weight: bold;
       color: var(--color-text-light);
-      font-size: 1.1rem;
-      margin-bottom: 5px;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
     }
-    
-    .sala-players {
-      font-size: 0.9rem;
+  .sala-players {
+  font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.7);
-      display: flex;
-      align-items: center;
+  display: flex;
+  align-items: center;
       gap: 5px;
     }
-    
-    .player-count {
-      display: flex;
-      align-items: center;
+  .player-count {
+  display: flex;
+  align-items: center;
     }
-    
-    .player-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #4CAF50;
-      margin-right: 3px;
+  .player-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4CAF50;
+  margin-right: 3px;
     }
-    
-    .sala-actions {
-      display: flex;
+  .sala-actions {
+  display: flex;
       gap: 10px;
     }
-    
-    .btn-jugador, .btn-cantor {
-      padding: 8px 15px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: bold;
+  .btn-jugador, .btn-cantor {
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
       gap: 5px;
-      border: none;
+  border: none;
     }
-    
-    .btn-jugador {
-      background: linear-gradient(135deg, var(--color-accent), #e53935);
+  .btn-jugador {
+  background: linear-gradient(135deg, var(--color-accent), #e53935);
       color: white;
     }
-    
-    .btn-cantor {
-      background: linear-gradient(135deg, var(--color-secondary), #ffea70);
+  .btn-cantor {
+  background: linear-gradient(135deg, var(--color-secondary), #ffea70);
       color: var(--color-text-dark);
     }
-    
-    .btn-jugador:hover, .btn-cantor:hover {
-      transform: translateY(-2px);
+  .btn-jugador:hover, .btn-cantor:hover {
+  transform: translateY(-2px);
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     }
-    
-    .empty-state {
-      text-align: center;
-      padding: 30px;
+  .empty-state {
+  text-align: center;
+  padding: 30px;
       color: rgba(255, 255, 255, 0.6);
-      font-style: italic;
+  font-style: italic;
     }
-    
     /* Animación de partículas de fondo */
-    .particle {
+  .particle {
       position: absolute;
-      border-radius: 50%;
-      opacity: 0.15;
+  border-radius: 50%;
+  opacity: 0.15;
       pointer-events: none;
-      animation: floatParticle 12s infinite linear;
+  animation: floatParticle 12s infinite linear;
       z-index: 0;
     }
-    
     @keyframes floatParticle {
       0% { transform: translateY(0) scale(1); }
       50% { transform: translateY(-40px) scale(1.1); }
       100% { transform: translateY(0) scale(1); }
     }
-    
     /* Loading spinner */
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--color-secondary);
-      animation: spin 1s ease-in-out infinite;
+  .loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--color-secondary);
+  animation: spin 1s ease-in-out infinite;
     }
-    
     @keyframes spin {
-      to { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
     }
-    
     /* Responsive */
     @media (max-width: 768px) {
-      .main-container {
-        margin: 20px;
-        padding: 20px;
+  .main-container {
+  margin: 20px;
+  padding: 20px;
       }
-      
       h2 {
-        font-size: 2rem;
+  font-size: 2rem;
       }
-      
-      .sala {
-        flex-direction: column;
-        align-items: flex-start;
+  .sala {
+  flex-direction: column;
+  align-items: flex-start;
         gap: 15px;
       }
-      
-      .sala-actions {
-        width: 100%;
-        justify-content: center;
+  .sala-actions {
+  width: 100%;
+  justify-content: center;
       }
-      
-      .btn-jugador, .btn-cantor {
-        flex: 1;
-        justify-content: center;
+  .btn-jugador, .btn-cantor {
+  flex: 1;
+  justify-content: center;
       }
-      
-      .avatar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  .avatar-grid {
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
       }
     }
-    
     @media (max-width: 480px) {
-      .main-container {
-        margin: 10px;
-        padding: 15px;
+  .main-container {
+  margin: 10px;
+  padding: 15px;
       }
-      
       h2 {
-        font-size: 1.8rem;
+  font-size: 1.8rem;
       }
-      
-      .crear-sala {
-        padding: 15px;
+  .crear-sala {
+  padding: 15px;
       }
-      
-      .avatar-content {
-        padding: 20px;
+  .avatar-content {
+  padding: 20px;
       }
-      
-      .avatar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  .avatar-grid {
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
         gap: 10px;
       }
-      
-      .avatar-icon {
-        font-size: 2rem;
+  .avatar-icon {
+  font-size: 2rem;
       }
-      
-      .avatar-name {
-        font-size: 0.8rem;
+  .avatar-name {
+  font-size: 0.8rem;
       }
     }
   </style>
@@ -556,17 +486,14 @@
       <div class="floating-element"></div>
     </div>
   </div>
-
   <!-- Modal de selección de avatar -->
   <div class="avatar-modal" id="avatarModal">
     <div class="avatar-content">
       <h3>¡Bienvenido a Lotería Mexicana!</h3>
       <p>Selecciona tu avatar para comenzar</p>
-      
       <div class="avatar-grid" id="avatarGrid">
-        <!-- Los avatares se generarán con JavaScript -->
+  <!-- Los avatares se generarán con JavaScript -->
       </div>
-      
       <div class="avatar-actions">
         <button class="avatar-btn btn-primary" id="submitAvatarBtn">
           <i class="fas fa-check"></i> Confirmar
@@ -574,10 +501,8 @@
       </div>
     </div>
   </div>
-
   <div class="main-container">
     <h2>Salas de Juego</h2>
-    
     <div class="crear-sala">
       <div class="sala-preview" id="salaPreview">
         <div class="sala-preview-icon" id="previewIcon">
@@ -588,12 +513,10 @@
           <div class="sala-preview-creator" id="previewCreator">Creada por: Tú</div>
         </div>
       </div>
-      
       <button id="btnCrearSala">
         <i class="fas fa-plus"></i> Crear Sala
       </button>
     </div>
-    
     <div class="sala-lista">
       <h3>Salas disponibles</h3>
       <div id="listaSalas">
@@ -604,140 +527,119 @@
       </div>
     </div>
   </div>
-
   <script type="module">
-    import { db, ref, onValue, set, push, get, child, remove } from './firebase-conn.js';
-
-    const listaSalas = document.getElementById('listaSalas');
-    const emptyState = document.getElementById('emptyState');
-    const btnCrearSala = document.getElementById('btnCrearSala');
-    const avatarModal = document.getElementById('avatarModal');
-    const avatarGrid = document.getElementById('avatarGrid');
-    const submitAvatarBtn = document.getElementById('submitAvatarBtn');
-    const salaPreview = document.getElementById('salaPreview');
-    const previewIcon = document.getElementById('previewIcon');
-    const previewName = document.getElementById('previewName');
-    const previewCreator = document.getElementById('previewCreator');
-    
-    let selectedAvatar = null;
-    let playerName = 'Jugador';
-    let salasInterval;
-    
+  import { db, ref, onValue, set, push, get, child, remove } from './firebase-conn.js';
+  const listaSalas = document.getElementById('listaSalas');
+  const emptyState = document.getElementById('emptyState');
+  const btnCrearSala = document.getElementById('btnCrearSala');
+  const avatarModal = document.getElementById('avatarModal');
+  const avatarGrid = document.getElementById('avatarGrid');
+  const submitAvatarBtn = document.getElementById('submitAvatarBtn');
+  const salaPreview = document.getElementById('salaPreview');
+  const previewIcon = document.getElementById('previewIcon');
+  const previewName = document.getElementById('previewName');
+  const previewCreator = document.getElementById('previewCreator');
+  let selectedAvatar = null;
+  let playerName = 'Jugador';
+  let salasInterval;
     // Definir los avatares disponibles (los mismos que en cartamesa.html)
-    const avatares = [
-      { id: 1, icono: "fas fa-cloud-sun-rain", nombre: "Tláloc", color: "#2196F3" },
-      { id: 2, icono: "fas fa-mountain", nombre: "Xinantécatl", color: "#795548" },
-      { id: 3, icono: "fas fa-leaf", nombre: "Yum Kaax", color: "#388E3C" },
-      { id: 4, icono: "fas fa-water", nombre: "Tlanchana", color: "#4DD0E1" },
-      { id: 5, icono: "fas fa-feather-alt", nombre: "Quetzalcóatl", color: "#4CAF50" },
-      { id: 6, icono: "fas fa-meteor", nombre: "Huitzilopochtli", color: "#D32F2F" },
-      { id: 7, icono: "fas fa-drumstick-bite", nombre: "Xiló", color: "#FFEB3B" },
-      { id: 8, icono: "fas fa-fire", nombre: "Chantico", color: "#FF5722" },
-      { id: 9, icono: "fas fa-skull", nombre: "Mictlantecuhtli", color: "#9E9E9E" },
-      { id: 10, icono: "fas fa-ankh", nombre: "Coatlicue", color: "#A1887F" },
-      { id: 11, icono: "fas fa-crow", nombre: "Tecuanis", color: "#263238" },
-      { id: 12, icono: "fas fa-sun", nombre: "Tonatiuh", color: "#FFD700" },
-      { id: 13, icono: "fas fa-tree", nombre: "Ceiba", color: "#558B2F" },
-      { id: 14, icono: "fas fa-snowflake", nombre: "Iztlaciuatl", color: "#B0BEC5" },
-      { id: 15, icono: "fas fa-hand-holding-heart", nombre: "Cihuateteo", color: "#AD1457" },
-      { id: 16, icono: "fas fa-map-marked-alt", nombre: "Teotihuacan", color: "#FFC107" }
+  const avatares = [
+  { id: 1, icono: "fas fa-cloud-sun-rain", nombre: "Tláloc", color: "#2196F3" },
+  { id: 2, icono: "fas fa-mountain", nombre: "Xinantécatl", color: "#795548" },
+  { id: 3, icono: "fas fa-leaf", nombre: "Yum Kaax", color: "#388E3C" },
+  { id: 4, icono: "fas fa-water", nombre: "Tlanchana", color: "#4DD0E1" },
+  { id: 5, icono: "fas fa-feather-alt", nombre: "Quetzalcóatl", color: "#4CAF50" },
+  { id: 6, icono: "fas fa-meteor", nombre: "Huitzilopochtli", color: "#D32F2F" },
+  { id: 7, icono: "fas fa-drumstick-bite", nombre: "Xiló", color: "#FFEB3B" },
+  { id: 8, icono: "fas fa-fire", nombre: "Chantico", color: "#FF5722" },
+  { id: 9, icono: "fas fa-skull", nombre: "Mictlantecuhtli", color: "#9E9E9E" },
+  { id: 10, icono: "fas fa-ankh", nombre: "Coatlicue", color: "#A1887F" },
+  { id: 11, icono: "fas fa-crow", nombre: "Tecuanis", color: "#263238" },
+  { id: 12, icono: "fas fa-sun", nombre: "Tonatiuh", color: "#FFD700" },
+  { id: 13, icono: "fas fa-tree", nombre: "Ceiba", color: "#558B2F" },
+  { id: 14, icono: "fas fa-snowflake", nombre: "Iztlaciuatl", color: "#B0BEC5" },
+  { id: 15, icono: "fas fa-hand-holding-heart", nombre: "Cihuateteo", color: "#AD1457" },
+  { id: 16, icono: "fas fa-map-marked-alt", nombre: "Teotihuacan", color: "#FFC107" }
     ];
-
     // Inicializar selección de avatar
-    function initAvatarSelection() {
-      avatares.forEach(avatar => {
-        const avatarElement = document.createElement('div');
-        avatarElement.classList.add('avatar-item');
-        avatarElement.dataset.id = avatar.id;
-        
-        avatarElement.innerHTML = `
+  function initAvatarSelection() {
+  avatares.forEach(avatar => {
+  const avatarElement = document.createElement('div');
+  avatarElement.classList.add('avatar-item');
+  avatarElement.dataset.id = avatar.id;
+  avatarElement.innerHTML = `
           <div class="avatar-icon" style="color: ${avatar.color}">
             <i class="${avatar.icono}"></i>
           </div>
           <div class="avatar-name">${avatar.nombre}</div>
         `;
-        
-        avatarElement.addEventListener('click', () => {
+  avatarElement.addEventListener('click', () => {
           // Deseleccionar cualquier avatar previamente seleccionado
-          document.querySelectorAll('.avatar-item').forEach(item => {
-            item.classList.remove('selected');
+  document.querySelectorAll('.avatar-item').forEach(item => {
+  item.classList.remove('selected');
           });
-          
           // Seleccionar el avatar actual
-          avatarElement.classList.add('selected');
-          selectedAvatar = avatar;
-          playerName = avatar.nombre;
-          
+  avatarElement.classList.add('selected');
+  selectedAvatar = avatar;
+  playerName = avatar.nombre;
           // Actualizar la vista previa
-          updateSalaPreview();
+  updateSalaPreview();
         });
-        
-        avatarGrid.appendChild(avatarElement);
+  avatarGrid.appendChild(avatarElement);
       });
-      
       // Seleccionar el primer avatar por defecto
-      if (avatares.length > 0) {
-        const firstAvatar = document.querySelector('.avatar-item');
-        firstAvatar.classList.add('selected');
-        selectedAvatar = avatares[0];
-        playerName = avatares[0].nombre;
-        updateSalaPreview();
+  if (avatares.length > 0) {
+  const firstAvatar = document.querySelector('.avatar-item');
+  firstAvatar.classList.add('selected');
+  selectedAvatar = avatares[0];
+  playerName = avatares[0].nombre;
+  updateSalaPreview();
       }
     }
-    
     // Actualizar la vista previa de la sala
-    function updateSalaPreview() {
-      if (selectedAvatar) {
-        previewIcon.innerHTML = `<i class="${selectedAvatar.icono}" style="color: ${selectedAvatar.color}"></i>`;
-        previewName.textContent = `Sala de ${selectedAvatar.nombre}`;
-        previewCreator.textContent = `Creada por: ${selectedAvatar.nombre}`;
+  function updateSalaPreview() {
+  if (selectedAvatar) {
+  previewIcon.innerHTML = `<i class="${selectedAvatar.icono}" style="color: ${selectedAvatar.color}"></i>`;
+  previewName.textContent = `Sala de ${selectedAvatar.nombre}`;
+  previewCreator.textContent = `Creada por: ${selectedAvatar.nombre}`;
       }
     }
-    
     // Crear partículas de fondo
-    function createParticles() {
-      const colors = ['#006847', '#ffde00', '#c8102e', '#fffbe7'];
-      const overlay = document.querySelector('.background-overlay');
-      
-      for (let i = 0; i < 20; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        const size = Math.random() * 30 + 15;
-        p.style.width = p.style.height = size + 'px';
-        p.style.background = colors[Math.floor(Math.random() * colors.length)];
-        p.style.left = (Math.random() * 100) + 'vw';
-        p.style.top = (Math.random() * 100) + 'vh';
-        p.style.animationDuration = (10 + Math.random() * 8) + 's';
-        p.style.animationDelay = (Math.random() * 8) + 's';
-        overlay.appendChild(p);
+  function createParticles() {
+  const colors = ['#006847', '#ffde00', '#c8102e', '#fffbe7'];
+  const overlay = document.querySelector('.background-overlay');
+  for (let i = 0; i < 20; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 30 + 15;
+  p.style.width = p.style.height = size + 'px';
+  p.style.background = colors[Math.floor(Math.random() * colors.length)];
+  p.style.left = (Math.random() * 100) + 'vw';
+  p.style.top = (Math.random() * 100) + 'vh';
+  p.style.animationDuration = (10 + Math.random() * 8) + 's';
+  p.style.animationDelay = (Math.random() * 8) + 's';
+  overlay.appendChild(p);
       }
     }
-    
     // Mostrar salas activas con información de jugadores
-    function mostrarSalas() {
-      onValue(ref(db, 'salas'), (snapshot) => {
-        listaSalas.innerHTML = '';
-        const salas = snapshot.val() || {};
-        
-        if (Object.keys(salas).length === 0) {
-          emptyState.style.display = 'block';
-          return;
+  function mostrarSalas() {
+  onValue(ref(db, 'salas'), (snapshot) => {
+  listaSalas.innerHTML = '';
+  const salas = snapshot.val() || {};
+  if (Object.keys(salas).length === 0) {
+  emptyState.style.display = 'block';
+  return;
         }
-        
-        emptyState.style.display = 'none';
-        
-        Object.keys(salas).forEach((salaId, index) => {
-          const sala = salas[salaId];
-          
+  emptyState.style.display = 'none';
+  Object.keys(salas).forEach((salaId, index) => {
+  const sala = salas[salaId];
           // Contar jugadores conectados
-          const players = sala.players || {};
-          const connectedPlayers = Object.values(players).filter(player => player.connected).length;
-          
-          const div = document.createElement('div');
-          div.className = 'sala';
-          div.style.animationDelay = `${index * 0.1}s`;
-          
-          div.innerHTML = `
+  const players = sala.players || {};
+  const connectedPlayers = Object.values(players).filter(player => player.connected).length;
+  const div = document.createElement('div');
+  div.className = 'sala';
+  div.style.animationDelay = `${index * 0.1}s`;
+  div.innerHTML = `
             <div class="sala-info">
               <div class="sala-icon">
                 <i class="${sala.creatorIcon || 'fas fa-user'}"></i>
@@ -748,7 +650,7 @@
                   <div class="player-count">
                     ${Array(connectedPlayers).fill(0).map(() => 
                       '<span class="player-dot"></span>'
-                    ).join('')}
+  ).join('')}
                   </div>
                   <span>${connectedPlayers} jugador(es)</span>
                 </div>
@@ -763,178 +665,173 @@
               </button>
             </div>
           `;
-          
           // Añadir event listeners a los botones
-          div.querySelector('.btn-jugador').addEventListener('click', () => {
-            entrarSala(salaId, sala.nombre, false);
+  div.querySelector('.btn-jugador').addEventListener('click', () => {
+  entrarSala(salaId, sala.nombre, false);
           });
-          
-          div.querySelector('.btn-cantor').addEventListener('click', () => {
-            entrarSala(salaId, sala.nombre, true);
+  div.querySelector('.btn-cantor').addEventListener('click', () => {
+  entrarSala(salaId, sala.nombre, true);
           });
-          
-          listaSalas.appendChild(div);
+  listaSalas.appendChild(div);
         });
       });
     }
-
     // Verificar y limpiar salas vacías periódicamente
-    function iniciarLimpiezaSalas() {
-      if (salasInterval) clearInterval(salasInterval);
-      
-      salasInterval = setInterval(async () => {
-        const snapshot = await get(ref(db, 'salas'));
-        const salas = snapshot.val() || {};
-        
-        Object.keys(salas).forEach(async (salaId) => {
-          const sala = salas[salaId];
-          const players = sala.players || {};
-          const hasConnectedPlayers = Object.values(players).some(player => player.connected);
-          
+  function iniciarLimpiezaSalas() {
+  if (salasInterval) clearInterval(salasInterval);
+  salasInterval = setInterval(async () => {
+  const snapshot = await get(ref(db, 'salas'));
+  const salas = snapshot.val() || {};
+  Object.keys(salas).forEach(async (salaId) => {
+  const sala = salas[salaId];
+  const players = sala.players || {};
+  const hasConnectedPlayers = Object.values(players).some(player => player.connected);
           // Si no hay jugadores conectados, eliminar la sala después de 1 minuto
-          if (!hasConnectedPlayers) {
-            const lastActivity = sala.lastActivity || 0;
-            const now = Date.now();
-            
-            if (now - lastActivity > 60000) { // 1 minuto
-              await remove(ref(db, `salas/${salaId}`));
-              console.log(`Sala ${salaId} eliminada por inactividad`);
+  if (!hasConnectedPlayers) {
+  const lastActivity = sala.lastActivity || 0;
+  const now = Date.now();
+  if (now - lastActivity > 60000) { // 1 minuto
+  await remove(ref(db, `salas/${salaId}`));
+  console.log(`Sala ${salaId} eliminada por inactividad`);
             }
           } else {
             // Actualizar timestamp de actividad
-            await set(ref(db, `salas/${salaId}/lastActivity`), Date.now());
+  await set(ref(db, `salas/${salaId}/lastActivity`), Date.now());
           }
         });
       }, 30000); // Verificar cada 30 segundos
     }
-
     // Entrar a sala, con validación de cantor único
-    async function entrarSala(salaId, salaNombre, esCantor = false) {
-      btnCrearSala.innerHTML = '<span class="loading"></span> Conectando...';
-      btnCrearSala.disabled = true;
-      
+  async function entrarSala(salaId, salaNombre, esCantor = false) {
+  btnCrearSala.innerHTML = '<span class="loading"></span> Conectando...';
+  btnCrearSala.disabled = true;
       try {
-        localStorage.setItem('salaId', salaId);
-        localStorage.setItem('salaNombre', salaNombre);
-        localStorage.setItem('esCantor', esCantor.toString());
-        localStorage.setItem('playerName', playerName);
-        localStorage.setItem('avatarId', selectedAvatar.id);
-        
-        if (esCantor) {
+  localStorage.setItem('salaId', salaId);
+  localStorage.setItem('salaNombre', salaNombre);
+  localStorage.setItem('esCantor', esCantor.toString());
+  localStorage.setItem('playerName', playerName);
+  localStorage.setItem('avatarId', selectedAvatar.id);
+  if (esCantor) {
           // Verificar si ya hay cantor conectado en la sala
-          const cantorSnap = await get(child(ref(db), `salas/${salaId}/players`));
-          const players = cantorSnap.val() || {};
-          
-          const hasActiveCantor = Object.values(players).some(
-            player => player.connected && player.role === 'cantor'
+  const cantorSnap = await get(child(ref(db), `salas/${salaId}/players`));
+  const players = cantorSnap.val() || {};
+  const hasActiveCantor = Object.values(players).some(
+  player => player.connected && player.role === 'cantor'
           );
-          
-          if (hasActiveCantor) {
-            alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
-            btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
-            btnCrearSala.disabled = false;
-            return;
+  if (hasActiveCantor) {
+  alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
+  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
+  btnCrearSala.disabled = false;
+  return;
           }
         }
-        
-        window.location.href = esCantor ? 'cartamesa.html' : 'otrojugador.html';
-        
+  window.location.href = esCantor ? 'cartamesa.html' : 'otrojugador.html';
       } catch (error) {
-        console.error('Error al entrar a la sala:', error);
-        alert('Error al conectar con la sala. Intenta nuevamente.');
-        btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
-        btnCrearSala.disabled = false;
+  console.error('Error al entrar a la sala:', error);
+  alert('Error al conectar con la sala. Intenta nuevamente.');
+  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
+  btnCrearSala.disabled = false;
       }
     }
-
     // Crear sala
-    btnCrearSala.addEventListener('click', async () => {
-      if (!selectedAvatar) {
-        alert('Por favor, selecciona un avatar primero');
-        return;
+  btnCrearSala.addEventListener('click', async () => {
+  if (!selectedAvatar) {
+  alert('Por favor, selecciona un avatar primero');
+  return;
       }
-      
-      const nombreSala = `Sala de ${selectedAvatar.nombre}`;
-      
-      btnCrearSala.innerHTML = '<span class="loading"></span> Creando...';
-      btnCrearSala.disabled = true;
-      
+  const nombreSala = `Sala de ${selectedAvatar.nombre}`;
+  btnCrearSala.innerHTML = '<span class="loading"></span> Creando...';
+  btnCrearSala.disabled = true;
       try {
         // Verifica si ya existe una sala con ese nombre
-        const snapshot = await get(ref(db, 'salas'));
-        const salas = snapshot.val() || {};
-        
-        const existe = Object.values(salas).some(s => s.nombre === nombreSala);
-        if (existe) {
-          alert('Ya existe una sala con ese nombre');
-          btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
-          btnCrearSala.disabled = false;
-          return;
+  const snapshot = await get(ref(db, 'salas'));
+  const salas = snapshot.val() || {};
+  const existe = Object.values(salas).some(s => s.nombre === nombreSala);
+  if (existe) {
+  alert('Ya existe una sala con ese nombre');
+  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
+  btnCrearSala.disabled = false;
+  return;
         }
-        
-        const salaRef = push(ref(db, 'salas'));
-        await set(salaRef, {
+  const salaRef = push(ref(db, 'salas'));
+  await set(salaRef, {
           nombre: nombreSala,
-          creator: playerName,
-          creatorIcon: selectedAvatar.icono,
-          creatorAvatarId: selectedAvatar.id,
+  creator: playerName,
+  creatorIcon: selectedAvatar.icono,
+  creatorAvatarId: selectedAvatar.id,
           creada: Date.now(),
-          lastActivity: Date.now()
+  lastActivity: Date.now()
         });
-        
         // Guardar información en localStorage
-        localStorage.setItem('salaId', salaRef.key);
-        localStorage.setItem('salaNombre', nombreSala);
-        localStorage.setItem('playerName', playerName);
-        localStorage.setItem('avatarId', selectedAvatar.id);
-        
+  localStorage.setItem('salaId', salaRef.key);
+  localStorage.setItem('salaNombre', nombreSala);
+  localStorage.setItem('playerName', playerName);
+  localStorage.setItem('avatarId', selectedAvatar.id);
         // Ocultar el modal de avatar
-        avatarModal.style.display = 'none';
-        
-        btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
-        btnCrearSala.disabled = false;
-        
+  avatarModal.style.display = 'none';
+  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
+  btnCrearSala.disabled = false;
         // Redirigir automáticamente como cantor
-        localStorage.setItem('esCantor', 'true');
-        window.location.href = 'cartamesa.html';
-        
+  localStorage.setItem('esCantor', 'true');
+  window.location.href = 'cartamesa.html';
       } catch (error) {
-        console.error('Error al crear sala:', error);
-        alert('Error al crear la sala. Intenta nuevamente.');
-        btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
-        btnCrearSala.disabled = false;
+  console.error('Error al crear sala:', error);
+  alert('Error al crear la sala. Intenta nuevamente.');
+  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
+  btnCrearSala.disabled = false;
       }
     });
-
     // Confirmar selección de avatar
-    submitAvatarBtn.addEventListener('click', () => {
-      if (!selectedAvatar) {
-        alert('Por favor, selecciona un avatar');
-        return;
+  submitAvatarBtn.addEventListener('click', () => {
+  if (!selectedAvatar) {
+  alert('Por favor, selecciona un avatar');
+  return;
       }
-      
-      avatarModal.style.display = 'none';
-      updateSalaPreview();
+  avatarModal.style.display = 'none';
+  updateSalaPreview();
     });
-
     // Inicializar
-    document.addEventListener('DOMContentLoaded', () => {
-      initAvatarSelection();
-      createParticles();
-      mostrarSalas();
-      iniciarLimpiezaSalas();
-      
+  document.addEventListener('DOMContentLoaded', async () => { // <-- CAMBIADO A ASYNC
+  initAvatarSelection();
+  createParticles();
+  mostrarSalas();
+  iniciarLimpiezaSalas();
       // Verificar si ya hay información de jugador guardada
-      const savedPlayerName = localStorage.getItem('playerName');
-      const savedAvatarId = localStorage.getItem('avatarId');
-      
-      if (savedPlayerName && savedAvatarId) {
-        const savedAvatar = avatares.find(a => a.id.toString() === savedAvatarId);
-        if (savedAvatar) {
-          selectedAvatar = savedAvatar;
-          playerName = savedPlayerName;
-          avatarModal.style.display = 'none';
-          updateSalaPreview();
+  const savedPlayerName = localStorage.getItem('playerName');
+  const savedAvatarId = localStorage.getItem('avatarId');
+  if (savedPlayerName && savedAvatarId) {
+  const savedAvatar = avatares.find(a => a.id.toString() === savedAvatarId);
+  if (savedAvatar) {
+  selectedAvatar = savedAvatar;
+  playerName = savedPlayerName;
+  // avatarModal.style.display = 'none'; // <-- COMENTADO TEMPORALMENTE
+  updateSalaPreview();
+        }
+      }
+
+      // NUEVO: Verificar si la sala guardada en localStorage todavía existe
+  const savedSalaId = localStorage.getItem('salaId');
+  if (savedSalaId) {
+  try {
+  const salaSnapshot = await get(ref(db, `salas/${savedSalaId}`));
+  if (!salaSnapshot.exists()) {
+              // La sala NO existe en Firebase, la limpiamos del localStorage
+  console.log('La sala guardada ya no existe. Limpiando localStorage.');
+  localStorage.removeItem('salaId');
+  localStorage.removeItem('salaNombre');
+  localStorage.removeItem('esCantor');
+  // Opcional: Mostrar un mensaje al usuario
+  // alert('La sala a la que intentabas unirte ya no está disponible.');
+          } else {
+              // La sala SÍ existe, entonces ocultamos el modal y asumimos que el usuario está en ella.
+  avatarModal.style.display = 'none';
+          }
+        } catch (error) {
+  console.error('Error al verificar la sala guardada:', error);
+          // En caso de error, también limpiamos para no bloquear al usuario
+  localStorage.removeItem('salaId');
+  localStorage.removeItem('salaNombre');
+  localStorage.removeItem('esCantor');
         }
       }
     });
