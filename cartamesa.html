@@ -1048,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', listenAndRenderUserList);
                         database.ref(`salas/${salaId}/players/cantor`).once('value').then(snapPlayer => {
                             if (snapPlayer.exists() && snapPlayer.val().connected) {
                                 alert('Ya hay un cantor en esta sala. Solo puede haber uno.');
-                                window.location.href = 'index.html';
+                                window.location.href = 'salas.html';
                             } else {
                                 // No hay cantor real, limpiar flag y permitir acceso
                                 database.ref(`salas/${salaId}/cantorConnected`).set(false).then(() => {
@@ -1333,7 +1333,7 @@ if (chatForm && chatInput) {
     // Mostrar animación de limpieza
     const boardContainer = document.querySelector('.board-container');
     boardContainer.style.opacity = '0.7';
-    boardContainer.style.transition = 'opacity 0.5s ease';
+    boardContainer.style.transition = 'opacity 0s ease';
     
     setTimeout(() => {
         // Recorrer todas las cartas del tablero y quitar las marcas
@@ -1446,7 +1446,6 @@ if (chatForm && chatInput) {
             });
         }
 
-        // Inicializar el tablero
         // Inicializar el tablero
 function initBoard() {
     playerBoardElement.innerHTML = '';
@@ -1671,7 +1670,7 @@ function verificarCartonLleno() {
 
         // Disparar confeti
         confetti({
-            particleCount: 300,
+            particleCount: 250,
             spread: 70,
             origin: { y: 0.6 }
         });
