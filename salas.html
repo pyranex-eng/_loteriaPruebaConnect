@@ -739,7 +739,8 @@
   alert('Por favor, selecciona un avatar primero');
   return;
       }
-  const nombreSala = `Sala de ${selectedAvatar.nombre}`;
+      // MODIFICADO AQUÍ: Se añade un timestamp único para evitar colisiones de nombre.
+  const nombreSala = `Sala de ${selectedAvatar.nombre} - ${Date.now()}`;
   btnCrearSala.innerHTML = '<span class="loading"></span> Creando...';
   btnCrearSala.disabled = true;
       try {
@@ -808,7 +809,6 @@
   updateSalaPreview();
         }
       }
-
       // NUEVO: Verificar si la sala guardada en localStorage todavía existe
   const savedSalaId = localStorage.getItem('salaId');
   if (savedSalaId) {
