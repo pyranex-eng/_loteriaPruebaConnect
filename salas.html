@@ -208,6 +208,82 @@
   transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
+
+    /* Modal de nombre de sala */
+  .sala-name-modal {
+      position: fixed;
+      top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+      z-index: 1001;
+    }
+  .sala-name-content {
+  background: var(--color-bg-dark);
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--color-accent);
+  text-align: center;
+  animation: scaleIn 0.5s ease-out;
+    }
+  .sala-name-content h3 {
+      color: var(--color-secondary);
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+    }
+  .sala-name-input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-light);
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  text-align: center;
+    }
+  .sala-name-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  .sala-name-input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+      box-shadow: 0 0 10px rgba(255, 222, 0, 0.3);
+    }
+  .sala-name-actions {
+  display: flex;
+  justify-content: center;
+      gap: 15px;
+    }
+  .sala-name-btn {
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+      cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+    }
+  .btn-create-sala {
+  background: linear-gradient(135deg, var(--color-accent), #e53935);
+      color: white;
+    }
+  .btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-light);
+    }
+  .sala-name-btn:hover {
+  transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
     /* Formulario crear sala */
   .crear-sala {
   display: flex;
@@ -464,6 +540,9 @@
   .avatar-content {
   padding: 20px;
       }
+  .sala-name-content {
+  padding: 20px;
+      }
   .avatar-grid {
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
         gap: 10px;
@@ -501,6 +580,24 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal para nombre de sala -->
+  <div class="sala-name-modal" id="salaNameModal" style="display: none;">
+    <div class="sala-name-content">
+      <h3>¡Crea tu sala!</h3>
+      <p>Elige un nombre único para tu sala de juego</p>
+      <input type="text" class="sala-name-input" id="salaNameInput" placeholder="Nombre de la sala" maxlength="30">
+      <div class="sala-name-actions">
+        <button class="sala-name-btn btn-cancel" id="cancelSalaNameBtn">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button class="sala-name-btn btn-create-sala" id="confirmSalaNameBtn">
+          <i class="fas fa-check"></i> Crear Sala
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="main-container">
     <h2>Salas de Juego</h2>
     <div class="crear-sala">
@@ -539,9 +636,14 @@
   const previewIcon = document.getElementById('previewIcon');
   const previewName = document.getElementById('previewName');
   const previewCreator = document.getElementById('previewCreator');
+  const salaNameModal = document.getElementById('salaNameModal');
+  const salaNameInput = document.getElementById('salaNameInput');
+  const cancelSalaNameBtn = document.getElementById('cancelSalaNameBtn');
+  const confirmSalaNameBtn = document.getElementById('confirmSalaNameBtn');
   let selectedAvatar = null;
   let playerName = 'Jugador';
   let salasInterval;
+
     // Definir los avatares disponibles (los mismos que en cartamesa.html)
   const avatares = [
   { id: 1, icono: "fas fa-cloud-sun-rain", nombre: "Tláloc", color: "#2196F3" },
@@ -561,6 +663,7 @@
   { id: 15, icono: "fas fa-hand-holding-heart", nombre: "Cihuateteo", color: "#AD1457" },
   { id: 16, icono: "fas fa-map-marked-alt", nombre: "Teotihuacan", color: "#FFC107" }
     ];
+
     // Inicializar selección de avatar
   function initAvatarSelection() {
   avatares.forEach(avatar => {
@@ -596,6 +699,7 @@
   updateSalaPreview();
       }
     }
+
     // Actualizar la vista previa de la sala
   function updateSalaPreview() {
   if (selectedAvatar) {
@@ -604,6 +708,7 @@
   previewCreator.textContent = `Creada por: ${selectedAvatar.nombre}`;
       }
     }
+
     // Crear partículas de fondo
   function createParticles() {
   const colors = ['#006847', '#ffde00', '#c8102e', '#fffbe7'];
@@ -621,6 +726,7 @@
   overlay.appendChild(p);
       }
     }
+
     // Mostrar salas activas con información de jugadores
   function mostrarSalas() {
   onValue(ref(db, 'salas'), (snapshot) => {
@@ -676,6 +782,7 @@
         });
       });
     }
+
     // Verificar y limpiar salas vacías periódicamente
   function iniciarLimpiezaSalas() {
   if (salasInterval) clearInterval(salasInterval);
@@ -701,6 +808,7 @@
         });
       }, 30000); // Verificar cada 30 segundos
     }
+
     // Entrar a sala, con validación de cantor único
   async function entrarSala(salaId, salaNombre, esCantor = false) {
   btnCrearSala.innerHTML = '<span class="loading"></span> Conectando...';
@@ -733,25 +841,44 @@
   btnCrearSala.disabled = false;
       }
     }
-    // Crear sala
-  btnCrearSala.addEventListener('click', async () => {
+
+    // Crear sala - MODIFICADO
+  btnCrearSala.addEventListener('click', () => {
   if (!selectedAvatar) {
   alert('Por favor, selecciona un avatar primero');
   return;
       }
-      // MODIFICADO AQUÍ: Se añade un timestamp único para evitar colisiones de nombre.
-  const nombreSala = `Sala de ${selectedAvatar.nombre} - ${Date.now()}`;
+      // Mostrar el modal para ingresar el nombre de la sala
+  salaNameModal.style.display = 'flex';
+  salaNameInput.focus();
+      // Establecer un nombre predeterminado
+  salaNameInput.value = `Sala de ${selectedAvatar.nombre}`;
+    });
+
+    // Confirmar nombre de sala
+  confirmSalaNameBtn.addEventListener('click', async () => {
+  const nombreSala = salaNameInput.value.trim();
+  if (!nombreSala) {
+  alert('Por favor, ingresa un nombre para la sala');
+  return;
+      }
+  if (nombreSala.length < 3) {
+  alert('El nombre de la sala debe tener al menos 3 caracteres');
+  return;
+      }
   btnCrearSala.innerHTML = '<span class="loading"></span> Creando...';
   btnCrearSala.disabled = true;
+  salaNameModal.style.display = 'none';
       try {
         // Verifica si ya existe una sala con ese nombre
   const snapshot = await get(ref(db, 'salas'));
   const salas = snapshot.val() || {};
   const existe = Object.values(salas).some(s => s.nombre === nombreSala);
   if (existe) {
-  alert('Ya existe una sala con ese nombre');
+  alert('Ya existe una sala con ese nombre. Por favor, elige otro.');
   btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
   btnCrearSala.disabled = false;
+  salaNameModal.style.display = 'flex'; // Volver a mostrar el modal
   return;
         }
   const salaRef = push(ref(db, 'salas'));
@@ -768,10 +895,6 @@
   localStorage.setItem('salaNombre', nombreSala);
   localStorage.setItem('playerName', playerName);
   localStorage.setItem('avatarId', selectedAvatar.id);
-        // Ocultar el modal de avatar
-  avatarModal.style.display = 'none';
-  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
-  btnCrearSala.disabled = false;
         // Redirigir automáticamente como cantor
   localStorage.setItem('esCantor', 'true');
   window.location.href = 'cartamesa.html';
@@ -782,6 +905,14 @@
   btnCrearSala.disabled = false;
       }
     });
+
+    // Cancelar creación de sala
+  cancelSalaNameBtn.addEventListener('click', () => {
+  salaNameModal.style.display = 'none';
+  btnCrearSala.innerHTML = '<i class="fas fa-plus"></i> Crear Sala';
+  btnCrearSala.disabled = false;
+    });
+
     // Confirmar selección de avatar
   submitAvatarBtn.addEventListener('click', () => {
   if (!selectedAvatar) {
@@ -791,8 +922,9 @@
   avatarModal.style.display = 'none';
   updateSalaPreview();
     });
+
     // Inicializar
-  document.addEventListener('DOMContentLoaded', async () => { // <-- CAMBIADO A ASYNC
+  document.addEventListener('DOMContentLoaded', async () => {
   initAvatarSelection();
   createParticles();
   mostrarSalas();
@@ -805,30 +937,24 @@
   if (savedAvatar) {
   selectedAvatar = savedAvatar;
   playerName = savedPlayerName;
-  // avatarModal.style.display = 'none'; // <-- COMENTADO TEMPORALMENTE
   updateSalaPreview();
         }
       }
-      // NUEVO: Verificar si la sala guardada en localStorage todavía existe
+      // Verificar si la sala guardada en localStorage todavía existe
   const savedSalaId = localStorage.getItem('salaId');
   if (savedSalaId) {
   try {
   const salaSnapshot = await get(ref(db, `salas/${savedSalaId}`));
   if (!salaSnapshot.exists()) {
-              // La sala NO existe en Firebase, la limpiamos del localStorage
   console.log('La sala guardada ya no existe. Limpiando localStorage.');
   localStorage.removeItem('salaId');
   localStorage.removeItem('salaNombre');
   localStorage.removeItem('esCantor');
-  // Opcional: Mostrar un mensaje al usuario
-  // alert('La sala a la que intentabas unirte ya no está disponible.');
           } else {
-              // La sala SÍ existe, entonces ocultamos el modal y asumimos que el usuario está en ella.
   avatarModal.style.display = 'none';
           }
         } catch (error) {
   console.error('Error al verificar la sala guardada:', error);
-          // En caso de error, también limpiamos para no bloquear al usuario
   localStorage.removeItem('salaId');
   localStorage.removeItem('salaNombre');
   localStorage.removeItem('esCantor');
