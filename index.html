@@ -388,49 +388,59 @@
         }
         
         @media (max-width: 768px) {
-            .logo-icon {
-                font-size: 4rem;
-            }
-            h1 {
-                font-size: 2.8rem;
-            }
-            .subtitle {
-                font-size: 1.1rem;
-                margin-bottom: 30px;
-            }
-            .buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            .btn {
-                width: 100%;
-                max-width: 300px; /* Limita el ancho en móviles para que no sean demasiado grandes */
-            }
-            .floating-card {
-                display: none;
-            }
-        }
+    .logo-icon {
+        font-size: 4rem;
+    }
+    h1 {
+        font-size: 2.8rem;
+    }
+    .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    .buttons {
+        flex-direction: column;
+        align-items: center; /* Esta línea es crucial */
+        width: 100%;
+        display: flex;
+        gap: 15px; /* Espaciado entre botones */
+    }
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto; /* Centrado horizontal */
+        display: flex;
+        justify-content: center; /* Centrado interno */
+    }
+    .floating-card {
+        display: none;
+    }
+}
 
-        @media (max-width: 480px) {
-            .logo-icon {
-                font-size: 3.5rem;
-            }
-            h1 {
-                font-size: 2.2rem;
-            }
-            .card {
-                padding: 20px;
-            }
-            .card-icon {
-                font-size: 3rem;
-            }
-            .card h2 {
-                font-size: 1.5rem;
-            }
-            .card p {
-                font-size: 1rem;
-            }
-        }
+@media (max-width: 480px) {
+    .logo-icon {
+        font-size: 3.5rem;
+    }
+    h1 {
+        font-size: 2.2rem;
+    }
+    .card {
+        padding: 20px;
+    }
+    .card-icon {
+        font-size: 3rem;
+    }
+    .card h2 {
+        font-size: 1.5rem;
+    }
+    .card p {
+        font-size: 1rem;
+    }
+    .btn {
+        max-width: 280px; /* Ajuste para móviles más pequeños */
+        padding: 14px 20px; /* Ajuste de padding */
+    }
+}
 
         /* Animaciones */
         @keyframes fadeIn {
